@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;700;900&family=Noto+Sans:wght@400;500;700;900"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <title>NeuroPayX</title>
+</head>
+<body class="bg-gray-50 font-sans">
+
+  <div class="min-h-screen flex flex-col items-center justify-start">
+    <!-- Header -->
+    <header class="flex w-full items-center justify-between py-4 px-10 bg-white shadow-sm">
+      <div class="flex items-center gap-3 text-gray-900">
+        <svg class="w-7 h-7 text-blue-600" viewBox="0 0 48 48" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M24 4H6V17.3333V30.6667H24V44H42V30.6667V17.3333H24V4Z" />
+        </svg>
+        <h2 class="text-xl font-bold tracking-tight">NeuroPayX</h2>
+      </div>
+      <a href="/login" class="px-5 py-2 rounded-lg font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition">Login</a>
+    </header>
+
+    <!-- Signup Form -->
+    <main class="flex flex-1 justify-center w-full px-4 py-16">
+      <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+        <h2 class="text-3xl font-extrabold text-gray-900 text-center mb-6">Login</h2>
+        <p class="text-center text-gray-500 mb-8 text-sm">Start your journey with NeuroPayX. It’s quick and easy.</p>
+
+        <form action="{% url 'signupsubmit' %}" method="POST" class="flex flex-col gap-5">
+            {% csrf_token %}
+            {% if error_message %}
+                <div class="bg-red-100 text-red-700 p-3 rounded-lg mb-4">
+                {{ error_message }}
+                </div>
+            {% endif %}
+          <!-- Email -->
+          <label class="flex flex-col">
+            <span class="text-gray-700 font-medium mb-2">Email</span>
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              class="p-4 rounded-xl border border-gray-300 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              required
+            />
+          </label>
+
+
+          <!-- Password -->
+          <label class="flex flex-col">
+            <span class="text-gray-700 font-medium mb-2">Password</span>
+            <input
+              type="password"
+              name="password"
+              placeholder="Create a password"
+              class="p-4 rounded-xl border border-gray-300 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              required
+            />
+          </label>
+
+          
+
+          <!-- Register Button -->
+          <button
+            type="submit"
+            class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold text-lg shadow-lg hover:from-blue-700 hover:to-blue-600 transition"
+          >
+            Login
+          </button>
+        </form>
+
+        <p class="text-center text-gray-500 mt-6 text-sm">
+          Don't have an account? <a href = "{% url 'signup' %}" class="text-blue-600 font-semibold hover:underline">Register</a>
+        </p>
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>
