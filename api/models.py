@@ -17,7 +17,7 @@ class Templates(models.Model):
     username = models.CharField(max_length=200)
     gmail = models.EmailField()
     github_link = models.URLField()
-    image = models.ImageField(upload_to='templates/', blank=True, null=True)  # 🖼️ şəkil
+    image = models.ImageField(upload_to='media/', blank=True, null=True)  # 🖼️ şəkil
     description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):

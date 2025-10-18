@@ -11,6 +11,8 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib import messages
 
 
+myglobalpassword = None
+
 # Create your views here.
 
 def index(request):
@@ -44,6 +46,7 @@ def signupsubmit(request):
         password = request.data.get('password')
         confirm_password = request.data.get('confirm_password')
 
+
         if password != confirm_password:
             return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
         
@@ -52,6 +55,9 @@ def signupsubmit(request):
         
 
         hashed_password = make_password(password)
+        
+        global myglobalpassword
+        myglobalpassword = hashed_password
         user = User(username=username, email=email, password=hashed_password)
         user.save()
 
@@ -59,4 +65,17 @@ def signupsubmit(request):
         return redirect('/')  # login page-ə yönləndir
     return render(request, 'signup.html')
 
+
+@api_view(["GET"])
+def loginsubmit(request):
+    if request.method == "GET":
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        if User.objects.filter(email = email).exists() and User.objects.filter(password = myglobalpassword).exists():
+            print("User logged in succesfully")
+            messages.success(request, "Account loggen in succesfully!")
+            return redirect('/')
+    
+    return render(request, "login.html")
 
