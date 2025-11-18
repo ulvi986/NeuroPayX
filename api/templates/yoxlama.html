@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Consultants Test</title>
+  <style>
+    .consultant-card {
+      border: 1px solid red; /* Sadəcə görünməsini yoxlamaq üçün */
+      padding: 10px;
+      margin: 5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: gray;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="flex flex-col gap-4">
+  {% for c in consultans %}
+    <div class="flex items-center gap-4 border p-4 rounded shadow-sm">
+      <!-- Avatar -->
+      {% if c.image %}
+        <img src="{{ c.image.url }}" class="h-10 w-10 rounded-full" alt="{{ c.username }}">
+      {% else %}
+        <div class="h-10 w-10 rounded-full bg-gray-400 flex items-center justify-center text-white font-bold">
+          {{ c.username|slice:":1" }}
+        </div>
+      {% endif %}
+      <div>
+        <p class="font-bold">{{ c.username }}</p>
+        <p class="text-gray-500 text-sm">{{ c.gmail }}</p>
+        <p class="text-gray-600">{{ c.experience_title }}</p>
+      </div>
+    </div>
+  {% empty %}
+    <p>No consultants found!</p>
+  {% endfor %}
+</div>
+
+
+</body>
+</html>

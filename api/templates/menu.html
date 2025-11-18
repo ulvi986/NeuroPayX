@@ -1,0 +1,432 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroPayX</title>
+    <script src="https://kit.fontawesome.com/18e54117ba.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'stylemenu.css' %}">
+    <link rel="shortcut icon" href="./images/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+</head>
+
+<body>
+    <main>
+        <div class="heroContainer">
+            <nav>
+
+                <div class="links">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                    <img src="{% static 'neuropayxnewlogo.png' %}" alt="" class="w-100 h-50">
+                    <a href="http://localhost:8001/" target="_blank">Build Your Website By AI</a>
+                    <a href="{% url 'consulting' %}">Consulting</a>
+                    <a href="#">Create Template</a>
+                    
+                </div>
+                <div class="signUps">
+                    <input type="text" name="search" placeholder=" 🔍 Search..">
+                    <div class="avatar-icon" id="avatar-icon" style="display: none;"></div>
+                    <button id="Login" type="button">Log in</button>
+                    <a href="{% url 'signup'  %}">
+                        <button type="button" id="signIn">Sign up</button>
+                    </a>
+                </div>
+            </nav>
+            <div class="hero">
+                <h1>NeuroPayX <br>for fintech guys</h1>
+                <p>Smart solutions start here — explore templates and consulting built for growth</p>
+                <h2> VIP consultans</h2>
+            </div>
+        </div>
+        <div class="scrollerContainer">
+            <div class="scroller">
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47170/original/cd3266dde4f00a5d6a509c7375ddaecd.png?1685644840&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Lucas Miller</p>
+                        <p>Backend Developer</p>
+                        <div>
+
+                            <span>Node.JS</span>
+                            <span>MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <video
+                        src="https://cdn.dribbble.com/uploads/47181/original/1e3a73a174484bef522b620c401cd00a.mp4?1685645427"
+                        autoplay loop muted></video>
+                    <div class="overlay">
+                        <p>Emma Smith</p>
+                        <p>Frontend Developer</p>
+                        <div>
+                            <span>Web dev</span>
+                            <span>UI/UX</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47172/original/d85ae8c7db2421e9a01ecac942978d4b.png?1685645079&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Grace Taylor</p>
+                        <p>Full Stack Developer</p>
+                        <div>
+                            <span>React.JS</span>
+                            <span>MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47175/original/1fb34610061a95a007ac5e7b1dc53138.jpeg?1685645183&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Ethan Clark</p>
+                        <p>Mobile App Developer</p>
+                        <div>
+                            <span>React Native</span>
+                            <span>MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47176/original/9b22cd83bde1809976bec0722d1f8923.jpeg?1685645213&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Lily Cooper</p>
+                        <p>Web Developer</p>
+                        <div>
+                            <span>React.JS</span>
+                            <span>MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <video
+                        src="https://cdn.dribbble.com/uploads/47180/original/1def7b9fb30832c4af4353b325d9c3af.mp4?1685645402"
+                        autoplay loop muted></video>
+                    <div class="overlay">
+                        <p>Owen Davis</p>
+                        <p>DevOps Engineer</p>
+                        <div>
+                            <span>DevOPS</span>
+                            <span>MERN</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47178/original/mercedes-bazan.png?1689174566&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Stella Brown</p>
+                        <p>Data Scientist</p>
+                        <div>
+                            <span>Data Scientist</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47173/original/Vladimir_Gruev.png?1689174896&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Stella Brown</p>
+                        <p>Data Scientist</p>
+                        <div>
+                            <span>Data Scientist</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <video
+                        src="https://cdn.dribbble.com/uploads/47179/original/35d07cfebd303e05e688078015da0cc2.mp4?1685645373"
+                        autoplay muted loop></video>
+                    <div class="overlay">
+                        <p>Caleb White</p>
+                        <p>Machine Learning Engineer</p>
+                        <div>
+                            <span>Machine Learning</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47174/original/4f02d72fe701b15b2168a4954332427f.png?1685645150&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Mia Turner</p>
+                        <p>Data Scientist</p>
+                        <div>
+                            <span>Data Scientist</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47177/original/3986915be548424a5d36657f2b034ead.jpeg?1685645250&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Noah Carter</p>
+                        <p>Data Scientist</p>
+                        <div>
+                            <span>Data Scientist</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroller">
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47170/original/cd3266dde4f00a5d6a509c7375ddaecd.png?1685644840&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Lucas Miller</p>
+                        <p>Backend Developer</p>
+                        <div>
+
+                            <span>Node.JS</span>
+                            <span>MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <video
+                        src="https://cdn.dribbble.com/uploads/47181/original/1e3a73a174484bef522b620c401cd00a.mp4?1685645427"
+                        autoplay loop muted></video>
+                    <div class="overlay">
+                        <p>Emma Smith</p>
+                        <p>Frontend Developer</p>
+                        <div>
+                            <span>Web dev</span>
+                            <span>UI/UX</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47172/original/d85ae8c7db2421e9a01ecac942978d4b.png?1685645079&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Grace Taylor</p>
+                        <p>Full Stack Developer</p>
+                        <div>
+                            <span>React.JS</span>
+                            <span>MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47175/original/1fb34610061a95a007ac5e7b1dc53138.jpeg?1685645183&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Ethan Clark</p>
+                        <p>Mobile App Developer</p>
+                        <div>
+                            <span>React Native</span>
+                            <span>MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47176/original/9b22cd83bde1809976bec0722d1f8923.jpeg?1685645213&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Lily Cooper</p>
+                        <p>Web Developer</p>
+                        <div>
+                            <span>React.JS</span>
+                            <span>MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <video
+                        src="https://cdn.dribbble.com/uploads/47180/original/1def7b9fb30832c4af4353b325d9c3af.mp4?1685645402"
+                        autoplay loop muted></video>
+                    <div class="overlay">
+                        <p>Owen Davis</p>
+                        <p>DevOps Engineer</p>
+                        <div>
+                            <span>DevOPS</span>
+                            <span>MERN</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47178/original/mercedes-bazan.png?1689174566&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Stella Brown</p>
+                        <p>Data Scientist</p>
+                        <div>
+                            <span>Data Scientist</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47173/original/Vladimir_Gruev.png?1689174896&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Stella Brown</p>
+                        <p>Data Scientist</p>
+                        <div>
+                            <span>Data Scientist</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <video
+                        src="https://cdn.dribbble.com/uploads/47179/original/35d07cfebd303e05e688078015da0cc2.mp4?1685645373"
+                        autoplay muted loop></video>
+                    <div class="overlay">
+                        <p>Caleb White</p>
+                        <p>Machine Learning Engineer</p>
+                        <div>
+                            <span>Machine Learning</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47174/original/4f02d72fe701b15b2168a4954332427f.png?1685645150&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Mia Turner</p>
+                        <p>Data Scientist</p>
+                        <div>
+                            <span>Data Scientist</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="elem">
+                    <img src="https://cdn.dribbble.com/uploads/47177/original/3986915be548424a5d36657f2b034ead.jpeg?1685645250&format=webp&resize=400x498&vertical=center"
+                        alt="">
+                    <div class="overlay">
+                        <p>Noah Carter</p>
+                        <p>Data Scientist</p>
+                        <div>
+                            <span>Data Scientist</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section>
+            <h2>Explore inspiring designs</h2>
+            <div>
+                {% for t in templates %}
+                  <div class="box">
+                    <div class="boxImg">
+                      <img src="{{ t.image.url }}" alt="{{ t.title }}">
+                      <div class="hover">
+                        <h6>{{ t.title }}</h6>
+                        <div>
+                          <a href="{% url 'show_me_template' t.id %}"> 
+                            <button class = 'reqbtn'>Get in touch</button>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="boxFooter">
+                      <p>Author:{{ t.username }}</p>
+                    </div>
+                  </div>
+                  {% endfor %}
+                
+                
+                
+                
+
+                 
+            </div>
+            <button id="explore">Browse more inspiration</button>
+        </section>
+        
+        <div class="footerScroller">
+            <div class="wrapper">
+                <div class="wrapperContainer">
+                    <img src="https://cdn.dribbble.com/userupload/12679462/file/original-7193f9870c124e32be881a2188e1b4da.jpg?format=webp&resize=320x240&vertical=center" alt="">
+                </div>
+                <div class="wrapperContainer">
+                    <img src="https://cdn.dribbble.com/userupload/12498480/file/still-013124e346372b4636d3c889ca9523eb.png?format=webp&resize=320x240&vertical=center" alt="">
+                </div>
+                <div class="wrapperContainer">
+                    <img src="https://cdn.dribbble.com/userupload/12507583/file/original-835018742d763134cb05b6d0ed8ed805.jpg?format=webp&resize=320x240&vertical=center" alt="">
+                </div>
+                <div class="wrapperContainer">
+                    <img src="https://cdn.dribbble.com/userupload/12534458/file/original-fa614bf79c04dc02a66146a76b0f4fcc.jpg?format=webp&resize=320x240&vertical=center" alt="">
+                </div>
+            </div>
+            <div class="wrapper">
+                <div class="wrapperContainer">
+                    <img src="https://cdn.dribbble.com/userupload/12679462/file/original-7193f9870c124e32be881a2188e1b4da.jpg?format=webp&resize=320x240&vertical=center" alt="">
+                </div>
+                <div class="wrapperContainer">
+                    <img src="https://cdn.dribbble.com/userupload/12498480/file/still-013124e346372b4636d3c889ca9523eb.png?format=webp&resize=320x240&vertical=center" alt="">
+                </div>
+                <div class="wrapperContainer">
+                    <img src="https://cdn.dribbble.com/userupload/12507583/file/original-835018742d763134cb05b6d0ed8ed805.jpg?format=webp&resize=320x240&vertical=center" alt="">
+                </div>
+                <div class="wrapperContainer">
+                    <img src="https://cdn.dribbble.com/userupload/12534458/file/original-fa614bf79c04dc02a66146a76b0f4fcc.jpg?format=webp&resize=320x240&vertical=center" alt="">
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div class="footer-part1">
+                <img src="./images/Dribbble-Logo.png" alt="">
+                <div>
+                    <a href="#">For designers</a>
+                    <a href="#">Hire talents</a>
+                    <a href="#">Inspiration</a>
+                    <a href="#">Advertising</a>
+                    <a href="#">Blog</a>
+                    <a href="#">About</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Support</a>
+                </div>
+                <div class="icons">
+                    <i class="fa-brands fa-instagram"></i>
+                    <i class="fa-brands fa-facebook"></i>
+                    <i class="fa-brands fa-linkedin"></i>
+                    <i class="fa-brands fa-twitter"></i>
+                </div>
+            </div>
+            <div class="footer-part2">
+                <div>
+                    <span> &copy; 2025 NeuroPayX</span>
+                    <span>Terms</span>
+                    <span>Privacy</span>
+                    <span>Cookies</span>
+                </div>
+                <div>
+                </div>
+            </div>
+        </footer>
+
+
+     
+    </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Məsələn, localStorage-da 'user' adlı məlumat saxlanıbsa
+            const user = localStorage.getItem('user'); 
+
+            if (user) {
+            // İstifadəçi artıq login olub
+            const userData = JSON.parse(user);
+            const loginBtn = document.getElementById("Login");
+            const signUpBtn = document.getElementById("signIn");
+            const avatarIcon = document.getElementById("avatar-icon");
+
+            if (loginBtn) loginBtn.style.display = "none";
+            if (signUpBtn) signUpBtn.style.display = "none";
+            
+            if (avatarIcon && userData.username) {
+                const firstLetter = userData.username.charAt(0).toUpperCase();
+                avatarIcon.textContent = firstLetter;
+                avatarIcon.style.display = "flex";
+            }
+            }
+        });
+    </script>
+</body>
+
+</html>

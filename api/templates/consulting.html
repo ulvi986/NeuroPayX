@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroPayX</title>
+    <script src="https://kit.fontawesome.com/18e54117ba.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'styleconsulting.css' %}">
+    <link rel="shortcut icon" href="./images/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'responsive.css' %}">
+</head>
+
+<body>
+    <main>
+        <div class="heroContainer">
+            <nav>
+                <div class="links">
+                    <i class="fa-solid fa-bars-staggered"></i>
+                    <img src="{% static 'neuropayxnewlogo.png' %}" alt="" class="w-100 h-50">
+                    <a href="{% url 'menu' %}">Templates</a>
+                    <a href = "#">Creating Template</a>
+                </div>
+
+                <div class="signUps">
+                    <div class="avatar-icon" id="avatar-icon" style="display: none;"></div>
+                    <button id="Login" type="button">Log in</button>
+                    <a href="{% url 'signup'  %}">
+                        <button type="button" id="signIn">Sign up</button>
+                    </a>
+                </div>
+            </nav>
+            <div class="hero">
+                <h1>Consultans</h1>
+                <p>Find consultant and to power your website</p>
+                <input type="text" name="search" placeholder="Search the Template">
+
+            </div>
+
+        </div>
+        
+        <section>
+            <div>
+                {% for t in consultans %}
+                  <div class="box">
+                    <div class="boxImg">
+                      <img src="{{ t.image.url }}" alt="{{ t.username }}">
+                      <div class="hover">
+                        <div>
+                          <a href="{% url 'show_me_consultant' t.id %}"> 
+                            <button class = 'reqbtn'>More Information</button>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="boxFooter">
+                      <p>Consultant:{{ t.username }}</p>
+                    </div>
+                  </div>
+                  {% endfor %}
+                
+                
+                
+                
+
+                 
+            </div>
+            <button id="explore">Browse more inspiration</button>
+        </section>
+        
+      
+        
+
+
+     
+    </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Məsələn, localStorage-da 'user' adlı məlumat saxlanıbsa
+            const user = localStorage.getItem('user'); 
+
+            if (user) {
+            // İstifadəçi artıq login olub
+            const userData = JSON.parse(user);
+            const loginBtn = document.getElementById("Login");
+            const signUpBtn = document.getElementById("signIn");
+            const avatarIcon = document.getElementById("avatar-icon");
+
+            if (loginBtn) loginBtn.style.display = "none";
+            if (signUpBtn) signUpBtn.style.display = "none";
+            
+            if (avatarIcon && userData.username) {
+                const firstLetter = userData.username.charAt(0).toUpperCase();
+                avatarIcon.textContent = firstLetter;
+                avatarIcon.style.display = "flex";
+            }
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,247 @@
+{% load static %}
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+    />
+
+    <title>NeuroPayX</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: 'white',
+              'primary-dark': 'white',
+            }
+          }
+        }
+      }
+    </script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+      body {
+        background: linear-gradient(black,gray, White);
+      }
+
+      
+
+      .card-hover {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .card-hover:hover {
+        transform: translateY(-6px) scale(1.01);
+        box-shadow: 0 12px 30px rgba(139, 92, 246, 0.4);
+      }
+
+      .nav-link {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+
+      .nav-link:hover::before,
+      .nav-link.active::before {
+        height: 100%;
+      }
+
+      .nav-link:hover {
+        background: rgba(139, 92, 246, 0.1);
+        transform: translateX(4px);
+      }
+
+      .nav-link.active {
+        background: rgba(139, 92, 246, 0.15);
+      }
+
+      .search-glow:focus {
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.5), 0 0 40px rgba(139, 92, 246, 0.2);
+      }
+
+      .gradient-text {
+        background: linear-gradient(135deg, #FFFFFF 0%, #8B5CF6 50%, #FFFFFF 100%);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradientShift 3s ease infinite;
+      }
+
+      @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+
+      .glow-ring {
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+      }
+
+      .experience-badge {
+        background: linear-gradient(135deg, #8B5CF6 0%, #C084FC 100%);
+        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+      }
+
+      .header-blur {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+
+      /* Scrollbar styling */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #0a0a0a;
+      }
+
+      
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #A78BFA;
+      }
+    </style>
+  </head>
+  <body>
+  <div class="flex h-screen text-white">
+
+   
+
+    <!-- 🟨 MAIN CONTENT -->
+    <div class="flex-1 flex flex-col">
+      <header class="header-blur flex items-center justify-between border-b border-purple-900/30 px-10 py-5 bg-black/60">
+        <div class="flex items-center gap-2">
+          <h2 class="text-3xl font-bold tracking-tight text-white">NeuroPayX</h2>
+        </div>
+
+        <div class="flex items-center gap-6">
+          <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12 glow-ring"
+            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBZ8cxU-hyeswTEKU5neVVjD7qSuFnvUoj2-TyJ5RCaI4D5zSw8J8Ji_hGT9LpqTv5P37k6MyD-8MpwTWoQBlmwT_I_v6xMM9jdAjauSJRroKgSMF_LAKOMMSrF373blJgN2ghfD7YreZjgcjyxmzIXkEp1JMOk_oSQSWsH0fsDa36ysD4OLqPh8M1ONFaAM5VkKtIsIDYV9nlMN86MpSFTygUO4uUUvL68kwCHiX9wY3G4yJKnUAGNF7P620jNCxYo9w5s5TNnuqs");'>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex-1 overflow-y-auto p-10 bg-black">
+        <div class="px-4 py-3 mb-8">
+          <label class="flex flex-col min-w-40 h-14 w-full max-w-2xl">
+            <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
+             
+              <input
+                placeholder="Search consultants..."
+                class="search-glow form-input flex w-full flex-1 rounded-xl text-white bg-purple-950/30 border border-purple-800/50 h-full placeholder:text-gray-500 px-4 rounded-l-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition"
+              />
+            </div>
+          </label>
+        </div>
+
+        <!-- 🧑‍💼 Consultant Cards -->
+        <div class="grid grid-cols-1 gap-6 max-w-5xl">
+          {% for c in consultans %}
+          <div class="card-hover flex items-center gap-6 bg-gradient-to-r from-purple-950/40 to-black/80 px-6 py-5 justify-between rounded-2xl border border-purple-800/40 hover:border-purple-500/80 cursor-pointer template-card"
+              data-consultant-id="{{ c.id }}" data-consultant-username="{{ c.username }}" data-consultant-email="{{ c.gmail }}">
+            <div class="flex items-center gap-5">
+              <div class="bg-center bg-no-repeat bg-cover rounded-full h-16 w-16 glow-ring"
+                style="background-image: url('{% if c.image %}{{ c.image.url }}{% else %}https://via.placeholder.com/100{% endif %}');"></div>
+              <div class="flex flex-col">
+                <p class="text-white text-xl font-bold">{{ c.username }}</p>
+                <p class="text-gray-400 text-sm mt-1.5">{{ c.description }}</p>
+              </div>
+            </div>
+            <div class="shrink-0">
+              <span class="experience-badge px-5 py-2.5 rounded-full text-sm font-bold text-white">
+                {{ c.experience_title }}
+              </span>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </main>
+    </div>
+    </div>
+  <script>
+  // Template click funksiyası
+  document.querySelectorAll('.template-card').forEach(card => {
+    card.addEventListener('click', function() {
+      const consultantId = this.getAttribute('data-consultant-id');
+      const consultantUsername = this.getAttribute('data-consultant-username');
+      const consultantEmail = this.getAttribute('data-consultant-email');
+
+      const savedUser = localStorage.getItem("user");
+      let userEmail = '';
+      let currentUsername = '';
+      
+      if(savedUser) {
+          try {
+              const userObj = JSON.parse(savedUser);
+              userEmail = userObj.email || '';
+              currentUsername = userObj.username || '';
+              
+              console.log('User Email:', userEmail);
+              console.log('Current Username:', currentUsername);
+              console.log('Consultant Email:', consultantEmail);
+          } catch(e) {
+              console.error('Error parsing user data:', e);
+              userEmail = '';
+              currentUsername = '';
+          }
+      }
+      
+      // Parametrləri encode et
+      const params = new URLSearchParams({
+          username: consultantUsername || '',
+          id: consultantId || '',
+          email: userEmail,
+          consultant_email: consultantEmail || ''
+      });
+      
+      // GET parametrləri ilə templates səhifəsinə yönləndir
+      window.location.href = `/get_the_consultant/?${params.toString()}`;
+    });
+  });
+
+  window.onload = function() {
+      const savedUser = localStorage.getItem("user");
+
+      if(savedUser) {
+          try {
+              const userObj = JSON.parse(savedUser);
+              const signupBtn = document.getElementById("signup-btn");
+              const loginBtn = document.getElementById("login-btn");
+              
+              if(signupBtn) signupBtn.style.display = "none";
+              if(loginBtn) loginBtn.style.display = "none";
+
+              const avatarPlaceholder = document.createElement('div');
+              avatarPlaceholder.id = "avatar-placeholder";
+              avatarPlaceholder.className = "w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-amber-600 text-white flex items-center justify-center font-bold text-lg ml-4 ring-2 ring-purple-500/50";
+              avatarPlaceholder.innerText = userObj.username.charAt(0).toUpperCase();
+
+              const img = document.querySelector('img[alt="User avatar"]');
+              if(img) {
+                  img.style.display = "none";
+                  img.parentNode.insertBefore(avatarPlaceholder, img);
+              }
+          } catch(e) {
+              console.error('Error loading user data:', e);
+          }
+      }
+  }
+
+  function logout() {
+      localStorage.removeItem("user");
+      window.location.reload();
+  }
+  </script>
+</body>
+</html>

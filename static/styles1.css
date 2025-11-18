@@ -1,0 +1,45 @@
+.btn {
+    padding: 0.5rem 1.5rem;         /* Yuxarı-aşağı / sol-sağ */
+    border-radius: 9999px;          /* Pill / oval forma */
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+/* Əsas düymə */
+.btn-primary {
+    background-color: #4338CA;      /* primary rəng */
+    color: #fff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #3730A3;      /* hover zamanı daha tünd */
+}
+
+/* Outline / light düymə */
+.btn-outline {
+    background-color: #FFFFFF;       /* card-light */
+    color: #1F2937;                  /* text-light */
+    border: 2px solid #E5E7EB;      /* border-light */
+}
+
+.btn-outline:hover {
+    background-color: #4338CA;
+    color: #fff;
+    border-color: #4338CA;
+}
+
+/* Dark mode üçün */
+body.dark .btn-outline {
+    background-color: #1F2937;       /* card-dark */
+    color: #F9FAFB;                  /* text-dark */
+    border-color: #374151;           /* border-dark */
+}
+
+body.dark .btn-outline:hover {
+    background-color: #4338CA;
+    color: #fff;
+    border-color: #4338CA;
+}

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Success</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#28a745",
+                        "background-light": "#f8f9fa",
+                        "background-dark": "#101c22",
+                        "text-light": "#343a40",
+                        "text-dark": "#f8f9fa",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<div class="flex flex-col px-4 py-6">
+<div class="flex flex-col items-center gap-6">
+<div class="flex justify-center items-center w-24 h-24 bg-primary/20 rounded-full">
+<span class="material-symbols-outlined text-primary text-6xl">check_circle</span>
+</div>
+<div class="flex max-w-[480px] flex-col items-center gap-2">
+<p class="text-text-light dark:text-text-dark text-3xl font-bold leading-tight tracking-[-0.015em] max-w-[480px] text-center">Success!</p>
+<p class="text-text-light dark:text-text-dark text-base font-normal leading-normal max-w-[480px] text-center">Your email has been sent successfully.</p>
+</div>
+<a href = "{% url 'menu' %}"
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Return to Homepage</span>
+</a>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

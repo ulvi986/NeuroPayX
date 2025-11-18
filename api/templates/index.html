@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang = 'en'>
+<head>
+        <meta charset="UTF-8">
+        <meta name = "viewport" content="width=device-width, initial-scale=1.0">
+        <title>NeuroPayX</title>
+        <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+        <img class = 'image-gradient' src =  "{% static 'gradient.png' %}" alt = 'gradient'>
+        <div class = 'layer-blur'></div>
+        <div class='container'>
+            <header>
+                <h1 class="logo">NeuroPayX</h1>
+            </header>
+            <main>
+
+                <div class = 'content'>
+                    <div class = 'tag-box'>
+                        <div class = 'tag'>Welcome to NeuroPayX</div>
+                    </div>
+                    <h1>NeuroPayX</h1>
+                    <h2>Fintech commerce</h2>
+                    <p class = 'description'>
+                        NeuroPayX, müasir fintech prinsiplərinə əsaslanan template alqı-satışı və konsultinq xidmətləri platformasıdır.
+Burada dizaynerlər, proqramçılar və mütəxəssislər öz şablonlarını (templates) sata,
+bizneslər isə ixtisaslaşmış konsultasiya və innovativ dizayn həlləri əldə edə bilərlər.
+
+Məqsədimiz  yaradıcı istedadları və peşəkar mütəxəssisləri bir araya gətirərək,
+rəqəmsal inkişafı daha ağıllı, sadə və effektiv etməkdir.
+
+NeuroPayX — yaradıcılığın bazarı, biliklərin mərkəzi.
+                    </p>
+                    <div class= 'buttons'>
+                        <a href = "{% url 'menu' %}" class="btn-started"> Get Started &gt;</a>
+                    </div>
+                </div>
+                
+            </main>
+            <spline-viewer class="robot-3d" url="{% static 'card_design_fintech.spline' %}"></spline-viewer></body>
+
+
+        </div>
+        <script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.85/build/spline-viewer.js"></script>
+</html>

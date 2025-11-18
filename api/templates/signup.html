@@ -1,0 +1,156 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'signup.css' %}" />
+    <title>Sign Up | NeuroPayX</title>
+</head>
+
+<body>
+    <div class="full-page">
+        <section class="left-sidebar">
+            <div>
+                <header>
+                    <h1>NeuroPayX</h1>
+                </header>
+
+                <div class="artwork">
+                    <div class="artwork-image"></div>
+                    <p class="artwork-attribution">
+                        <img src="{% static 'NeuroPayXLogo.png' %}" alt = "NeuroPayX Logo" width="400px" height="500px"/>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="main-content">
+            <nav class="sign-in-label">
+                <p>
+                    Already a member? <span><a href="{% url 'login'  %}">Sign in</a></span>
+                </p>
+            </nav>
+
+            <main>
+                <div>
+
+
+                    <!-- <article class="or-line">
+                        <hr>
+                        <p>Or</p>
+                        <hr> 
+                    </article> -->
+
+                    <div class="sign-up-form-container">
+                        <form action="{% url 'signupsubmit' %}" method="POST" id = "signup-form">
+                            {% csrf_token %}
+                            <div class="name">
+                                <article>
+                                    <label for="full-name">Full Name</label>
+                                    <input type="text" id="full-name" name = 'username' />
+                                </article>
+                            </div>
+
+                            <article>
+                                <label for="email-address">Email Address</label>
+                                <input type="email" id="email-address" name = "email" />
+                            </article>
+
+                            <article>
+                                <label for="password">Password</label>
+                                <input type="password" id="password" placeholder="6+ characters" name = "password" />
+
+                            </article>
+
+                            <article>
+                                <label for="confirmpassword">Confirm Password </label>
+                                <input type="password" id="confirm_password" placeholder="Confirm Password " name = "confirm_password" />
+                                
+                            </article>
+
+                            <article class="terms-and-conditions">
+                                <input type="checkbox" id="terms-and-conditions" />
+                                <label for="terms-and-conditions">
+                                    <p>
+                                        Creating an account means you're okay with our
+                                        <span>Terms of Service, Private Policy</span>, and our
+                                        default <span>Notification Settings</span>.
+                                    </p>
+                                </label>
+                            </article>
+
+                            <article>
+                                <button type="submit" class="create-account-btn btn">
+                                    <span>Create Account</span>
+                                </button>
+                            </article>
+                        </form>
+                    </div>
+
+                </div>
+            </main>
+        </section>
+    </div>
+<script>
+    document.getElementById("signup-form").onsubmit = async function(e) {
+        e.preventDefault(); // Form-un avtomatik submit olmasının qarşısını al
+        
+        const username = document.getElementById("full-name").value;
+        const email = document.getElementById('email-address').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+        
+        if(!username) return alert("Username boş ola bilməz");
+        if(!email) return alert("Email boş ola bilməz");
+        if(!password) return alert("Password boş ola bilməz");
+        if(password !== confirmPassword) return alert("Şifrələr uyğun gəlmir");
+
+        // User məlumatını localStorage-a yaz
+        const userData = {
+            username: username,
+            email: email
+        };
+        localStorage.setItem("user", JSON.stringify(userData));
+        
+        console.log("User saved to localStorage:", userData);
+        
+        // Form data-sını hazırla
+        const formData = new FormData();
+        formData.append('username', username);
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('confirm_password', confirmPassword);
+        
+        try {
+            // AJAX ilə göndər
+            const response = await fetch("{% url 'signupsubmit' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if(response.ok) {
+                alert("Qeydiyyat uğurla tamamlandı!");
+                window.location.href = "{% url 'menu' %}"; // Ana səhifəyə yönləndir
+            } else {
+                alert(result.error || "Xəta baş verdi");
+            }
+        } catch(error) {
+            console.error("Error:", error);
+            alert("Xəta baş verdi");
+        }
+        
+        return false;
+    }
+</script>
+
+  
+</body>
+</html>
