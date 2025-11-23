@@ -36,6 +36,7 @@ export default function Community() {
                 id={community.id}
                 name={community.name}
                 description={community.description || undefined}
+                memberCount={(community as any).memberCount}
               />
             ))}
           </div>
