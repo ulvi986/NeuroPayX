@@ -1,8 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Plus } from "lucide-react";
+import { Plus, LogOut, User } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Navbar = () => {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
   return (
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 py-4">
@@ -28,6 +37,23 @@ export const Navbar = () => {
                 Create Template
               </Button>
             </Link>
+
+            {user ? (
+              <div className="flex items-center gap-2">
+                <Button size="sm" variant="ghost" onClick={() => navigate('/profile')}>
+                  <User className="h-4 w-4 mr-2" />
+                  Profile
+                </Button>
+                <Button size="sm" variant="outline" onClick={handleSignOut}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Button size="sm" variant="outline" onClick={() => navigate('/auth')}>
+                Login
+              </Button>
+            )}
           </div>
         </div>
       </div>
