@@ -8,27 +8,33 @@ import { communityApi } from "@/lib/api/community";
 import { useToast } from "@/hooks/use-toast";
 import { UserPlus, UserMinus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-
+import { useAuth } from "@/hooks/useAuth";
 export default function CommunityDetail() {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const defaultUserId = "00000000-0000-0000-0000-000000000000";
+  const { user, loading } = useAuth();
+  const userId = user?.id ?? null;
 
-  const { data: community, isLoading } = useQuery({
+  const { data: community, isLoading: isCommunityLoading } = useQuery({
     queryKey: ["community", id],
     queryFn: () => communityApi.getById(id!),
     enabled: !!id,
   });
 
   const { data: isMember } = useQuery({
-    queryKey: ["community-membership", id],
-    queryFn: () => communityApi.checkMembership(id!, defaultUserId),
-    enabled: !!id,
+    queryKey: ["community-membership", id, userId],
+    queryFn: () => communityApi.checkMembership(id!, userId!),
+    enabled: !!id && !!userId && !loading,
   });
 
   const joinMutation = useMutation({
-    mutationFn: () => communityApi.join(id!, defaultUserId),
+    mutationFn: async () => {
+      if (!userId) {
+        throw new Error("You must be logged in to join this community.");
+      }
+      return communityApi.join(id!, userId);
+    },
     onSuccess: () => {
       toast({ title: "Success", description: "Joined community!" });
       queryClient.invalidateQueries({ queryKey: ["community"] });
@@ -44,7 +50,12 @@ export default function CommunityDetail() {
   });
 
   const leaveMutation = useMutation({
-    mutationFn: () => communityApi.leave(id!, defaultUserId),
+    mutationFn: async () => {
+      if (!userId) {
+        throw new Error("You must be logged in to leave this community.");
+      }
+      return communityApi.leave(id!, userId);
+    },
     onSuccess: () => {
       toast({ title: "Success", description: "Left community" });
       queryClient.invalidateQueries({ queryKey: ["community"] });
@@ -52,7 +63,7 @@ export default function CommunityDetail() {
     },
   });
 
-  if (isLoading) {
+  if (isCommunityLoading) {
     return (
       <Layout>
         <div className="space-y-8">
@@ -85,7 +96,7 @@ export default function CommunityDetail() {
               <Button
                 variant="outline"
                 onClick={() => leaveMutation.mutate()}
-                disabled={leaveMutation.isPending}
+                disabled={leaveMutation.isPending || !userId || loading}
               >
                 <UserMinus className="mr-2 h-4 w-4" />
                 Leave Community
@@ -93,7 +104,7 @@ export default function CommunityDetail() {
             ) : (
               <Button
                 onClick={() => joinMutation.mutate()}
-                disabled={joinMutation.isPending}
+                disabled={joinMutation.isPending || !userId || loading}
               >
                 <UserPlus className="mr-2 h-4 w-4" />
                 Join Community
