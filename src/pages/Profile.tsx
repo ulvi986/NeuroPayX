@@ -81,21 +81,6 @@ export default function Profile() {
                 </p>
               </div>
             </div>
-
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm text-muted-foreground">First Name</p>
-                <p className="font-medium">{profile?.first_name || 'Not set'}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Last Name</p>
-                <p className="font-medium">{profile?.last_name || 'Not set'}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Bio</p>
-                <p className="font-medium">{profile?.bio || 'Not set'}</p>
-              </div>
-            </div>
           </CardContent>
         </Card>
       </div>
