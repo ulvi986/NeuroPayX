@@ -11,6 +11,8 @@ import Consultants from "./pages/Consultants";
 import ConsultantDetail from "./pages/ConsultantDetail";
 import Community from "./pages/Community";
 import CommunityDetail from "./pages/CommunityDetail";
+import Auth from "./pages/Auth";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +32,8 @@ const App = () => (
           <Route path="/consultants/:id" element={<ConsultantDetail />} />
           <Route path="/community" element={<Community />} />
           <Route path="/community/:id" element={<CommunityDetail />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
