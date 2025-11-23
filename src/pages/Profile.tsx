@@ -65,28 +65,36 @@ export default function Profile() {
           <CardHeader>
             <CardTitle>My Profile</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <p className="text-sm text-muted-foreground">Email</p>
-              <p className="font-medium">{profile?.email}</p>
+          <CardContent className="space-y-6">
+            <div className="flex items-center gap-4">
+              {profile?.avatar_url && (
+                <img 
+                  src={profile.avatar_url} 
+                  alt="Profile avatar" 
+                  className="w-20 h-20 rounded-full"
+                />
+              )}
+              <div>
+                <p className="font-semibold text-lg">{profile?.email}</p>
+                <p className="text-sm text-muted-foreground">
+                  Member since {profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Unknown'}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground">First Name</p>
-              <p className="font-medium">{profile?.first_name || 'Not set'}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Last Name</p>
-              <p className="font-medium">{profile?.last_name || 'Not set'}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Bio</p>
-              <p className="font-medium">{profile?.bio || 'Not set'}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Member since</p>
-              <p className="font-medium">
-                {profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Unknown'}
-              </p>
+
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-muted-foreground">First Name</p>
+                <p className="font-medium">{profile?.first_name || 'Not set'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Last Name</p>
+                <p className="font-medium">{profile?.last_name || 'Not set'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Bio</p>
+                <p className="font-medium">{profile?.bio || 'Not set'}</p>
+              </div>
             </div>
           </CardContent>
         </Card>
