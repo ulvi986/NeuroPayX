@@ -10,7 +10,6 @@ import { RatingDisplay } from "@/components/RatingDisplay";
 import { RatingInput } from "@/components/RatingInput";
 import { CommentSection } from "@/components/CommentSection";
 import { consultantsApi } from "@/lib/api/consultants";
-import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { MessageSquare } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -24,7 +23,6 @@ import {
 
 export default function ConsultantDetail() {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showRating, setShowRating] = useState(false);
@@ -44,7 +42,10 @@ export default function ConsultantDetail() {
   });
 
   const requestMutation = useMutation({
-    mutationFn: () => consultantsApi.requestConsultation(id!, user!.id, requestMessage),
+    mutationFn: () => {
+      const placeholderUserId = "00000000-0000-0000-0000-000000000000";
+      return consultantsApi.requestConsultation(id!, placeholderUserId, requestMessage);
+    },
     onSuccess: () => {
       toast({ title: "Success", description: "Consultation request sent!" });
       setRequestMessage("");
@@ -60,7 +61,10 @@ export default function ConsultantDetail() {
   });
 
   const ratingMutation = useMutation({
-    mutationFn: (rating: number) => consultantsApi.addRating(id!, user!.id, rating),
+    mutationFn: (rating: number) => {
+      const placeholderUserId = "00000000-0000-0000-0000-000000000000";
+      return consultantsApi.addRating(id!, placeholderUserId, rating);
+    },
     onSuccess: () => {
       toast({ title: "Success", description: "Rating submitted!" });
       queryClient.invalidateQueries({ queryKey: ["consultant-rating"] });
@@ -69,7 +73,10 @@ export default function ConsultantDetail() {
   });
 
   const commentMutation = useMutation({
-    mutationFn: (comment: string) => consultantsApi.addComment(id!, user!.id, comment),
+    mutationFn: (comment: string) => {
+      const placeholderUserId = "00000000-0000-0000-0000-000000000000";
+      return consultantsApi.addComment(id!, placeholderUserId, comment);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["consultant"] });
     },
@@ -120,52 +127,50 @@ export default function ConsultantDetail() {
 
             <p className="text-lg text-muted-foreground">{consultant.description}</p>
 
-            {user && (
-              <div className="space-y-3">
-                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button size="lg">
-                      <MessageSquare className="mr-2 h-5 w-5" />
-                      Request Consultation
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Request a Consultation</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <Textarea
-                        placeholder="Tell the consultant about your needs..."
-                        value={requestMessage}
-                        onChange={(e) => setRequestMessage(e.target.value)}
-                        rows={5}
-                      />
-                      <Button
-                        onClick={() => requestMutation.mutate()}
-                        disabled={requestMutation.isPending || !requestMessage.trim()}
-                        className="w-full"
-                      >
-                        {requestMutation.isPending ? "Sending..." : "Send Request"}
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-
-                {!showRating ? (
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowRating(true)}
-                  >
-                    Rate this consultant
+            <div className="space-y-3">
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button size="lg">
+                    <MessageSquare className="mr-2 h-5 w-5" />
+                    Request Consultation
                   </Button>
-                ) : (
-                  <div className="p-4 border rounded-lg space-y-3">
-                    <p className="font-medium">Rate this consultant:</p>
-                    <RatingInput onRate={(rating) => ratingMutation.mutate(rating)} />
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Request a Consultation</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <Textarea
+                      placeholder="Tell the consultant about your needs..."
+                      value={requestMessage}
+                      onChange={(e) => setRequestMessage(e.target.value)}
+                      rows={5}
+                    />
+                    <Button
+                      onClick={() => requestMutation.mutate()}
+                      disabled={requestMutation.isPending || !requestMessage.trim()}
+                      className="w-full"
+                    >
+                      {requestMutation.isPending ? "Sending..." : "Send Request"}
+                    </Button>
                   </div>
-                )}
-              </div>
-            )}
+                </DialogContent>
+              </Dialog>
+
+              {!showRating ? (
+                <Button
+                  variant="outline"
+                  onClick={() => setShowRating(true)}
+                >
+                  Rate this consultant
+                </Button>
+              ) : (
+                <div className="p-4 border rounded-lg space-y-3">
+                  <p className="font-medium">Rate this consultant:</p>
+                  <RatingInput onRate={(rating) => ratingMutation.mutate(rating)} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

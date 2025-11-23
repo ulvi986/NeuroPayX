@@ -8,14 +8,12 @@ import { RatingDisplay } from "@/components/RatingDisplay";
 import { RatingInput } from "@/components/RatingInput";
 import { CommentSection } from "@/components/CommentSection";
 import { templatesApi } from "@/lib/api/templates";
-import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Download, ShoppingCart } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function TemplateDetail() {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showRating, setShowRating] = useState(false);
@@ -32,29 +30,11 @@ export default function TemplateDetail() {
     enabled: !!id,
   });
 
-  const { data: hasPurchased } = useQuery({
-    queryKey: ["template-purchase", id, user?.id],
-    queryFn: () => templatesApi.checkPurchase(id!, user!.id),
-    enabled: !!id && !!user,
-  });
-
-  const purchaseMutation = useMutation({
-    mutationFn: () => templatesApi.purchase(id!, user!.id),
-    onSuccess: () => {
-      toast({ title: "Success", description: "Template purchased!" });
-      queryClient.invalidateQueries({ queryKey: ["template-purchase"] });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
   const ratingMutation = useMutation({
-    mutationFn: (rating: number) => templatesApi.addRating(id!, user!.id, rating),
+    mutationFn: (rating: number) => {
+      const placeholderUserId = "00000000-0000-0000-0000-000000000000";
+      return templatesApi.addRating(id!, placeholderUserId, rating);
+    },
     onSuccess: () => {
       toast({ title: "Success", description: "Rating submitted!" });
       queryClient.invalidateQueries({ queryKey: ["template-rating"] });
@@ -63,7 +43,10 @@ export default function TemplateDetail() {
   });
 
   const commentMutation = useMutation({
-    mutationFn: (comment: string) => templatesApi.addComment(id!, user!.id, comment),
+    mutationFn: (comment: string) => {
+      const placeholderUserId = "00000000-0000-0000-0000-000000000000";
+      return templatesApi.addComment(id!, placeholderUserId, comment);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["template"] });
     },
@@ -122,41 +105,22 @@ export default function TemplateDetail() {
 
             <p className="text-lg text-muted-foreground">{template.description}</p>
 
-            {user && (
-              <div className="space-y-3">
-                {hasPurchased ? (
-                  <Button className="w-full" size="lg">
-                    <Download className="mr-2 h-5 w-5" />
-                    Download Template
-                  </Button>
-                ) : (
-                  <Button
-                    className="w-full"
-                    size="lg"
-                    onClick={() => purchaseMutation.mutate()}
-                    disabled={purchaseMutation.isPending}
-                  >
-                    <ShoppingCart className="mr-2 h-5 w-5" />
-                    {purchaseMutation.isPending ? "Processing..." : "Purchase Template"}
-                  </Button>
-                )}
-
-                {!showRating ? (
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => setShowRating(true)}
-                  >
-                    Rate this template
-                  </Button>
-                ) : (
-                  <div className="p-4 border rounded-lg space-y-3">
-                    <p className="font-medium">Rate this template:</p>
-                    <RatingInput onRate={(rating) => ratingMutation.mutate(rating)} />
-                  </div>
-                )}
-              </div>
-            )}
+            <div className="space-y-3">
+              {!showRating ? (
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => setShowRating(true)}
+                >
+                  Rate this template
+                </Button>
+              ) : (
+                <div className="p-4 border rounded-lg space-y-3">
+                  <p className="font-medium">Rate this template:</p>
+                  <RatingInput onRate={(rating) => ratingMutation.mutate(rating)} />
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
