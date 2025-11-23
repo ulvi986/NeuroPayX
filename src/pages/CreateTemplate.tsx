@@ -75,6 +75,35 @@ export default function CreateTemplate() {
         throw new Error("You must be logged in to create a template");
       }
 
+      // Ensure profile exists for this user to satisfy foreign key constraint
+      const {
+        data: existingProfile,
+        error: profileError,
+      } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (profileError) throw profileError;
+
+      if (!existingProfile) {
+        const firstLetter = user.email?.[0]?.toUpperCase() ?? "U";
+        const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+          firstLetter
+        )}&background=0D8ABC&color=fff&size=200`;
+
+        const { error: insertProfileError } = await supabase
+          .from("profiles")
+          .insert({
+            id: user.id,
+            email: user.email,
+            avatar_url: avatarUrl,
+          });
+
+        if (insertProfileError) throw insertProfileError;
+      }
+
       // Create template
       const { data: template, error: templateError } = await supabase
         .from("templates")
