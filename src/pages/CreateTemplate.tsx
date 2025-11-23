@@ -53,9 +53,9 @@ export default function CreateTemplate() {
 
       setErrors({});
 
-      // For now, we'll use a placeholder user_id since auth is removed
-      // In production, you'd want a proper user system
-      const placeholderUserId = "00000000-0000-0000-0000-000000000000";
+      // Get the current user's ID from auth
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("You must be logged in to create templates");
 
       // Create template
       const { data: template, error: templateError } = await supabase
@@ -64,7 +64,7 @@ export default function CreateTemplate() {
           title: templateName,
           description,
           price: parseFloat(price),
-          creator_id: placeholderUserId,
+          creator_id: user.id,
         })
         .select()
         .single();
