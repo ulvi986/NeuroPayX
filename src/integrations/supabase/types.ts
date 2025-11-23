@@ -282,6 +282,7 @@ export type Database = {
           email: string | null
           first_name: string | null
           id: string
+          ip_address: string | null
           last_name: string | null
           password: string | null
           updated_at: string | null
@@ -293,6 +294,7 @@ export type Database = {
           email?: string | null
           first_name?: string | null
           id: string
+          ip_address?: string | null
           last_name?: string | null
           password?: string | null
           updated_at?: string | null
@@ -304,6 +306,7 @@ export type Database = {
           email?: string | null
           first_name?: string | null
           id?: string
+          ip_address?: string | null
           last_name?: string | null
           password?: string | null
           updated_at?: string | null
