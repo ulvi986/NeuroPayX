@@ -8,11 +8,17 @@ export const communityApi = {
   async getAll() {
     const { data, error } = await supabase
       .from("communities")
-      .select("*")
+      .select(`
+        *,
+        community_members(count)
+      `)
       .order("name");
     
     if (error) throw error;
-    return data;
+    return data?.map(community => ({
+      ...community,
+      memberCount: community.community_members?.[0]?.count || 0
+    }));
   },
 
   async getById(id: string) {
@@ -70,5 +76,30 @@ export const communityApi = {
     
     if (error) throw error;
     return !!data;
+  },
+
+  async sendMessage(communityId: string, userId: string, message: string) {
+    const { data, error } = await supabase
+      .from("community_messages")
+      .insert({ community_id: communityId, user_id: userId, message })
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data;
+  },
+
+  async getMessages(communityId: string) {
+    const { data, error } = await supabase
+      .from("community_messages")
+      .select(`
+        *,
+        profiles(first_name, last_name, avatar_url)
+      `)
+      .eq("community_id", communityId)
+      .order("created_at", { ascending: true });
+    
+    if (error) throw error;
+    return data;
   }
 };
