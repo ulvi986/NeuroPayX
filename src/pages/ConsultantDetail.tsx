@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function ConsultantDetail() {
   const { id } = useParams<{ id: string }>();
@@ -28,7 +29,8 @@ export default function ConsultantDetail() {
   const [showRating, setShowRating] = useState(false);
   const [requestMessage, setRequestMessage] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const defaultUserId = "00000000-0000-0000-0000-000000000000";
+  const { user, loading } = useAuth();
+  const userId = user?.id ?? null;
 
   const { data: consultant, isLoading } = useQuery({
     queryKey: ["consultant", id],
@@ -43,7 +45,12 @@ export default function ConsultantDetail() {
   });
 
   const requestMutation = useMutation({
-    mutationFn: () => consultantsApi.requestConsultation(id!, defaultUserId, requestMessage),
+    mutationFn: async () => {
+      if (!userId) {
+        throw new Error("You must be logged in to request a consultation.");
+      }
+      return consultantsApi.requestConsultation(id!, userId, requestMessage);
+    },
     onSuccess: () => {
       toast({ title: "Success", description: "Consultation request sent!" });
       setRequestMessage("");
@@ -59,7 +66,12 @@ export default function ConsultantDetail() {
   });
 
   const ratingMutation = useMutation({
-    mutationFn: (rating: number) => consultantsApi.addRating(id!, defaultUserId, rating),
+    mutationFn: async (rating: number) => {
+      if (!userId) {
+        throw new Error("You must be logged in to rate this consultant.");
+      }
+      return consultantsApi.addRating(id!, userId, rating);
+    },
     onSuccess: () => {
       toast({ title: "Success", description: "Rating submitted!" });
       queryClient.invalidateQueries({ queryKey: ["consultant-rating"] });
@@ -68,7 +80,12 @@ export default function ConsultantDetail() {
   });
 
   const commentMutation = useMutation({
-    mutationFn: (comment: string) => consultantsApi.addComment(id!, defaultUserId, comment),
+    mutationFn: async (comment: string) => {
+      if (!userId) {
+        throw new Error("You must be logged in to comment.");
+      }
+      return consultantsApi.addComment(id!, userId, comment);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["consultant"] });
     },
@@ -122,7 +139,7 @@ export default function ConsultantDetail() {
             <div className="space-y-3">
               <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button size="lg">
+                  <Button size="lg" disabled={!userId || loading}>
                     <MessageSquare className="mr-2 h-5 w-5" />
                     Request Consultation
                   </Button>
@@ -153,6 +170,7 @@ export default function ConsultantDetail() {
                 <Button
                   variant="outline"
                   onClick={() => setShowRating(true)}
+                  disabled={!userId || loading}
                 >
                   Rate this consultant
                 </Button>

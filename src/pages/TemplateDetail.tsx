@@ -11,13 +11,15 @@ import { templatesApi } from "@/lib/api/templates";
 import { useToast } from "@/hooks/use-toast";
 import { Download } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function TemplateDetail() {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [showRating, setShowRating] = useState(false);
-  const defaultUserId = "00000000-0000-0000-0000-000000000000";
+  const { user, loading } = useAuth();
+  const userId = user?.id ?? null;
 
   const { data: template, isLoading } = useQuery({
     queryKey: ["template", id],
@@ -32,7 +34,12 @@ export default function TemplateDetail() {
   });
 
   const ratingMutation = useMutation({
-    mutationFn: (rating: number) => templatesApi.addRating(id!, defaultUserId, rating),
+    mutationFn: async (rating: number) => {
+      if (!userId) {
+        throw new Error("You must be logged in to rate this template.");
+      }
+      return templatesApi.addRating(id!, userId, rating);
+    },
     onSuccess: () => {
       toast({ title: "Success", description: "Rating submitted!" });
       queryClient.invalidateQueries({ queryKey: ["template-rating"] });
@@ -41,7 +48,12 @@ export default function TemplateDetail() {
   });
 
   const commentMutation = useMutation({
-    mutationFn: (comment: string) => templatesApi.addComment(id!, defaultUserId, comment),
+    mutationFn: async (comment: string) => {
+      if (!userId) {
+        throw new Error("You must be logged in to comment on this template.");
+      }
+      return templatesApi.addComment(id!, userId, comment);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["template"] });
     },
@@ -111,6 +123,7 @@ export default function TemplateDetail() {
                   variant="outline"
                   className="w-full"
                   onClick={() => setShowRating(true)}
+                  disabled={!userId || loading}
                 >
                   Rate this template
                 </Button>
