@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { Layout } from "@/components/Layout";
@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Upload, X } from "lucide-react";
 import { z } from "zod";
+import { useAuth } from "@/hooks/useAuth";
 
 const templateSchema = z.object({
   creatorName: z.string().trim().min(1, "Creator name is required").max(100),
@@ -22,6 +23,7 @@ const templateSchema = z.object({
 export default function CreateTemplate() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, loading } = useAuth();
   
   const [creatorName, setCreatorName] = useState("");
   const [templateName, setTemplateName] = useState("");
@@ -29,6 +31,17 @@ export default function CreateTemplate() {
   const [price, setPrice] = useState("0");
   const [images, setImages] = useState<File[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!loading && !user) {
+      toast({
+        title: "Authentication required",
+        description: "Please log in to create a template",
+        variant: "destructive",
+      });
+      navigate('/auth');
+    }
+  }, [user, loading, navigate, toast]);
 
   const createMutation = useMutation({
     mutationFn: async () => {
@@ -53,8 +66,9 @@ export default function CreateTemplate() {
 
       setErrors({});
 
-      // Use a default user ID for all operations
-      const defaultUserId = "00000000-0000-0000-0000-000000000000";
+      if (!user) {
+        throw new Error("You must be logged in to create a template");
+      }
 
       // Create template
       const { data: template, error: templateError } = await supabase
@@ -63,7 +77,7 @@ export default function CreateTemplate() {
           title: templateName,
           description,
           price: parseFloat(price),
-          creator_id: defaultUserId,
+          creator_id: user.id,
         })
         .select()
         .single();
