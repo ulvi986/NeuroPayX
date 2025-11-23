@@ -1,15 +1,24 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Plus, LogOut, User } from "lucide-react";
+import { Plus, LogOut, User, Menu } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { useState } from "react";
 
 export const Navbar = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
+    setIsOpen(false);
+  };
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    setIsOpen(false);
   };
 
   return (
@@ -20,7 +29,8 @@ export const Navbar = () => {
             NeuropayX
           </Link>
           
-          <div className="flex items-center gap-6">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-6">
             <Link to="/templates" className="text-sm font-medium hover:text-primary transition-colors">
               Templates
             </Link>
@@ -55,6 +65,79 @@ export const Navbar = () => {
               </Button>
             )}
           </div>
+
+          {/* Mobile Navigation */}
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild className="md:hidden">
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <nav className="flex flex-col gap-4 mt-8">
+                <Button 
+                  variant="ghost" 
+                  className="justify-start text-lg"
+                  onClick={() => handleNavigation('/templates')}
+                >
+                  Templates
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="justify-start text-lg"
+                  onClick={() => handleNavigation('/consultants')}
+                >
+                  Consultants
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  className="justify-start text-lg"
+                  onClick={() => handleNavigation('/community')}
+                >
+                  Community
+                </Button>
+                <Button 
+                  variant="default" 
+                  className="justify-start text-lg"
+                  onClick={() => handleNavigation('/create-template')}
+                >
+                  <Plus className="h-5 w-5 mr-2" />
+                  Create Template
+                </Button>
+
+                <div className="border-t pt-4 mt-4 space-y-4">
+                  {user ? (
+                    <>
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-start text-lg"
+                        onClick={() => handleNavigation('/profile')}
+                      >
+                        <User className="h-5 w-5 mr-2" />
+                        Profile
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-start text-lg"
+                        onClick={handleSignOut}
+                      >
+                        <LogOut className="h-5 w-5 mr-2" />
+                        Logout
+                      </Button>
+                    </>
+                  ) : (
+                    <Button 
+                      variant="default" 
+                      className="w-full justify-start text-lg"
+                      onClick={() => handleNavigation('/auth')}
+                    >
+                      Login
+                    </Button>
+                  )}
+                </div>
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </nav>
