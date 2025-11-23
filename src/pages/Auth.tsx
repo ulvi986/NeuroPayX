@@ -28,7 +28,7 @@ export default function Auth() {
     e.preventDefault();
     setIsLoading(true);
 
-    const { error } = await signUp(signupForm.email, signupForm.password);
+    const { data, error } = await signUp(signupForm.email, signupForm.password);
 
     if (error) {
       toast.error(error.message);
@@ -36,8 +36,13 @@ export default function Auth() {
       return;
     }
 
-    toast.success('Account created successfully!');
-    navigate('/');
+    if (data.user) {
+      toast.success('Account created successfully!');
+      // Give a moment for the session to be established
+      setTimeout(() => {
+        navigate('/create-template');
+      }, 500);
+    }
     setIsLoading(false);
   };
 

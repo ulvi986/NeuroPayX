@@ -33,13 +33,18 @@ export default function CreateTemplate() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
+    // Only redirect if we're sure the user is not logged in (loading is complete)
     if (!loading && !user) {
-      toast({
-        title: "Authentication required",
-        description: "Please log in to create a template",
-        variant: "destructive",
-      });
-      navigate('/auth');
+      const timer = setTimeout(() => {
+        toast({
+          title: "Authentication required",
+          description: "Please log in to create a template",
+          variant: "destructive",
+        });
+        navigate('/auth');
+      }, 1000);
+      
+      return () => clearTimeout(timer);
     }
   }, [user, loading, navigate, toast]);
 
