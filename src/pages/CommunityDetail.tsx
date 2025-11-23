@@ -5,14 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { communityApi } from "@/lib/api/community";
-import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { UserPlus, UserMinus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function CommunityDetail() {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -22,14 +20,16 @@ export default function CommunityDetail() {
     enabled: !!id,
   });
 
+  const placeholderUserId = "00000000-0000-0000-0000-000000000000";
+
   const { data: isMember } = useQuery({
-    queryKey: ["community-membership", id, user?.id],
-    queryFn: () => communityApi.checkMembership(id!, user!.id),
-    enabled: !!id && !!user,
+    queryKey: ["community-membership", id],
+    queryFn: () => communityApi.checkMembership(id!, placeholderUserId),
+    enabled: !!id,
   });
 
   const joinMutation = useMutation({
-    mutationFn: () => communityApi.join(id!, user!.id),
+    mutationFn: () => communityApi.join(id!, placeholderUserId),
     onSuccess: () => {
       toast({ title: "Success", description: "Joined community!" });
       queryClient.invalidateQueries({ queryKey: ["community"] });
@@ -45,7 +45,7 @@ export default function CommunityDetail() {
   });
 
   const leaveMutation = useMutation({
-    mutationFn: () => communityApi.leave(id!, user!.id),
+    mutationFn: () => communityApi.leave(id!, placeholderUserId),
     onSuccess: () => {
       toast({ title: "Success", description: "Left community" });
       queryClient.invalidateQueries({ queryKey: ["community"] });
@@ -81,28 +81,26 @@ export default function CommunityDetail() {
           <h1 className="text-4xl font-bold">{community.name}</h1>
           <p className="text-lg text-muted-foreground">{community.description}</p>
 
-          {user && (
-            <div>
-              {isMember ? (
-                <Button
-                  variant="outline"
-                  onClick={() => leaveMutation.mutate()}
-                  disabled={leaveMutation.isPending}
-                >
-                  <UserMinus className="mr-2 h-4 w-4" />
-                  Leave Community
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => joinMutation.mutate()}
-                  disabled={joinMutation.isPending}
-                >
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Join Community
-                </Button>
-              )}
-            </div>
-          )}
+          <div>
+            {isMember ? (
+              <Button
+                variant="outline"
+                onClick={() => leaveMutation.mutate()}
+                disabled={leaveMutation.isPending}
+              >
+                <UserMinus className="mr-2 h-4 w-4" />
+                Leave Community
+              </Button>
+            ) : (
+              <Button
+                onClick={() => joinMutation.mutate()}
+                disabled={joinMutation.isPending}
+              >
+                <UserPlus className="mr-2 h-4 w-4" />
+                Join Community
+              </Button>
+            )}
+          </div>
         </div>
 
         <div>

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
-import { useAuth } from "@/hooks/useAuth";
 import { Card } from "./ui/card";
 
 interface Comment {
@@ -22,7 +21,6 @@ interface CommentSectionProps {
 }
 
 export const CommentSection = ({ comments, onAddComment }: CommentSectionProps) => {
-  const { user } = useAuth();
   const [newComment, setNewComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -42,22 +40,20 @@ export const CommentSection = ({ comments, onAddComment }: CommentSectionProps) 
     <div className="space-y-6">
       <h3 className="text-xl font-semibold">Comments</h3>
       
-      {user && (
-        <Card className="p-4">
-          <Textarea
-            placeholder="Write a comment..."
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            className="mb-3"
-          />
-          <Button 
-            onClick={handleSubmit} 
-            disabled={isSubmitting || !newComment.trim()}
-          >
-            Post Comment
-          </Button>
-        </Card>
-      )}
+      <Card className="p-4">
+        <Textarea
+          placeholder="Write a comment..."
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          className="mb-3"
+        />
+        <Button 
+          onClick={handleSubmit} 
+          disabled={isSubmitting || !newComment.trim()}
+        >
+          Post Comment
+        </Button>
+      </Card>
 
       <div className="space-y-4">
         {comments.map((comment) => (

@@ -16,11 +16,11 @@ const Index = () => {
             Your premier marketplace for templates, expert consultations, and professional communities
           </p>
           <div className="flex gap-4 justify-center">
-            <Link to="/templates">
-              <Button size="lg">Browse Templates</Button>
+            <Link to="/create-template">
+              <Button size="lg">Create Template</Button>
             </Link>
-            <Link to="/consultants">
-              <Button size="lg" variant="outline">Find Consultants</Button>
+            <Link to="/templates">
+              <Button size="lg" variant="outline">Browse Templates</Button>
             </Link>
           </div>
         </section>

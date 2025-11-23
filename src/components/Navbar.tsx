@@ -1,11 +1,8 @@
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { useAuth } from "@/hooks/useAuth";
-import { User, LogOut } from "lucide-react";
+import { Plus } from "lucide-react";
 
 export const Navbar = () => {
-  const { user, signOut } = useAuth();
-
   return (
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 py-4">
@@ -25,24 +22,12 @@ export const Navbar = () => {
               Community
             </Link>
             
-            {user ? (
-              <div className="flex items-center gap-3">
-                <Link to="/profile">
-                  <Button variant="ghost" size="sm">
-                    <User className="h-4 w-4 mr-2" />
-                    Profile
-                  </Button>
-                </Link>
-                <Button variant="outline" size="sm" onClick={() => signOut()}>
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Logout
-                </Button>
-              </div>
-            ) : (
-              <Link to="/auth">
-                <Button size="sm">Sign In</Button>
-              </Link>
-            )}
+            <Link to="/create-template">
+              <Button size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                Create Template
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
