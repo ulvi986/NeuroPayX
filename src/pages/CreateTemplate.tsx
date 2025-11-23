@@ -53,9 +53,8 @@ export default function CreateTemplate() {
 
       setErrors({});
 
-      // Get the current user's ID from auth
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("You must be logged in to create templates");
+      // Use a default user ID for all operations
+      const defaultUserId = "00000000-0000-0000-0000-000000000000";
 
       // Create template
       const { data: template, error: templateError } = await supabase
@@ -64,7 +63,7 @@ export default function CreateTemplate() {
           title: templateName,
           description,
           price: parseFloat(price),
-          creator_id: user.id,
+          creator_id: defaultUserId,
         })
         .select()
         .single();
