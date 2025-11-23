@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
+import Auth from "./pages/Auth";
+import Profile from "./pages/Profile";
 import Templates from "./pages/Templates";
 import TemplateDetail from "./pages/TemplateDetail";
 import CreateTemplate from "./pages/CreateTemplate";
@@ -23,6 +25,8 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/auth" element={<Auth />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/templates" element={<Templates />} />
           <Route path="/templates/:id" element={<TemplateDetail />} />
           <Route path="/create-template" element={<CreateTemplate />} />
