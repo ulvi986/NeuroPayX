@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Download } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function TemplateDetail() {
   const { id } = useParams<{ id: string }>();
@@ -56,6 +57,52 @@ export default function TemplateDetail() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["template"] });
+    },
+  });
+
+  const demoRequestMutation = useMutation({
+    mutationFn: async () => {
+      if (!userId || !user?.email) {
+        throw new Error("You must be logged in to request a demo.");
+      }
+      if (!template) {
+        throw new Error("Template not found.");
+      }
+
+      const { data: creatorProfile } = await supabase
+        .from("profiles")
+        .select("email")
+        .eq("id", template.creator_id)
+        .single();
+
+      if (!creatorProfile?.email) {
+        throw new Error("Creator email not found.");
+      }
+
+      const response = await supabase.functions.invoke("send-demo-request", {
+        body: {
+          recipientEmail: creatorProfile.email,
+          itemName: template.title,
+          itemType: "Template",
+          userEmail: user.email,
+        },
+      });
+
+      if (response.error) throw response.error;
+      return response.data;
+    },
+    onSuccess: () => {
+      toast({ 
+        title: "Success", 
+        description: "Demo request sent to the creator!" 
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 
@@ -113,9 +160,13 @@ export default function TemplateDetail() {
             <p className="text-lg text-muted-foreground">{template.description}</p>
 
             <div className="space-y-3">
-              <Button className="w-full" size="lg">
-                <Download className="mr-2 h-5 w-5" />
-                Download Template
+              <Button 
+                className="w-full" 
+                size="lg"
+                onClick={() => demoRequestMutation.mutate()}
+                disabled={!userId || loading || demoRequestMutation.isPending}
+              >
+                {demoRequestMutation.isPending ? "Sending..." : "Book a Demo"}
               </Button>
 
               {!showRating ? (
