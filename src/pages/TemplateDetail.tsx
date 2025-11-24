@@ -149,7 +149,7 @@ export default function TemplateDetail() {
               <h1 className="text-4xl font-bold mb-2">{template.title}</h1>
               <div className="flex items-center gap-4 mb-4">
                 <Badge variant="secondary" className="text-xl font-bold">
-                  ${Number(template.price).toFixed(2)}
+                  {Number(template.price).toFixed(2)}AZN
                 </Badge>
                 {avgRating !== undefined && (
                   <RatingDisplay rating={avgRating} />
