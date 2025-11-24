@@ -1,0 +1,59 @@
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { Resend } from "https://esm.sh/resend@4.0.0";
+
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
+interface DemoRequestEmailData {
+  recipientEmail: string;
+  itemName: string;
+  itemType: "Template" | "Consultant";
+  userEmail: string;
+}
+
+const handler = async (req: Request): Promise<Response> => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const { recipientEmail, itemName, itemType, userEmail }: DemoRequestEmailData = await req.json();
+
+    console.log("Sending demo request email:", { recipientEmail, itemName, itemType, userEmail });
+
+    const emailResponse = await resend.emails.send({
+      from: "no_replyNeuroPayX@gmail.com",
+      to: [recipientEmail],
+      subject: `New Demo Request for ${itemName}`,
+      html: `
+        <h2>New Demo Request</h2>
+        <p>A user requested a demo.</p>
+        <p><strong>Item:</strong> ${itemName} (${itemType})</p>
+        <p><strong>User Email:</strong> ${userEmail}</p>
+        <p><strong>Message:</strong> User wants a demo.</p>
+      `,
+    });
+
+    console.log("Email sent successfully:", emailResponse);
+
+    return new Response(JSON.stringify(emailResponse), {
+      status: 200,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
+  } catch (error: any) {
+    console.error("Error sending demo request email:", error);
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      }
+    );
+  }
+};
+
+serve(handler);

@@ -12,6 +12,7 @@ import { CommentSection } from "@/components/CommentSection";
 import { consultantsApi } from "@/lib/api/consultants";
 import { useToast } from "@/hooks/use-toast";
 import { MessageSquare } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -91,6 +92,52 @@ export default function ConsultantDetail() {
     },
   });
 
+  const demoRequestMutation = useMutation({
+    mutationFn: async () => {
+      if (!userId || !user?.email) {
+        throw new Error("You must be logged in to request a demo.");
+      }
+      if (!consultant) {
+        throw new Error("Consultant not found.");
+      }
+
+      const { data: consultantProfile } = await supabase
+        .from("profiles")
+        .select("email")
+        .eq("id", consultant.user_id)
+        .single();
+
+      if (!consultantProfile?.email) {
+        throw new Error("Consultant email not found.");
+      }
+
+      const response = await supabase.functions.invoke("send-demo-request", {
+        body: {
+          recipientEmail: consultantProfile.email,
+          itemName: consultant.name,
+          itemType: "Consultant",
+          userEmail: user.email,
+        },
+      });
+
+      if (response.error) throw response.error;
+      return response.data;
+    },
+    onSuccess: () => {
+      toast({ 
+        title: "Success", 
+        description: "Demo request sent to the consultant!" 
+      });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   if (isLoading) {
     return (
       <Layout>
@@ -137,34 +184,13 @@ export default function ConsultantDetail() {
             <p className="text-lg text-muted-foreground">{consultant.description}</p>
 
             <div className="space-y-3">
-              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button size="lg" disabled={!userId || loading}>
-                    <MessageSquare className="mr-2 h-5 w-5" />
-                    Request Consultation
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Request a Consultation</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <Textarea
-                      placeholder="Tell the consultant about your needs..."
-                      value={requestMessage}
-                      onChange={(e) => setRequestMessage(e.target.value)}
-                      rows={5}
-                    />
-                    <Button
-                      onClick={() => requestMutation.mutate()}
-                      disabled={requestMutation.isPending || !requestMessage.trim()}
-                      className="w-full"
-                    >
-                      {requestMutation.isPending ? "Sending..." : "Send Request"}
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+              <Button 
+                size="lg" 
+                onClick={() => demoRequestMutation.mutate()}
+                disabled={!userId || loading || demoRequestMutation.isPending}
+              >
+                {demoRequestMutation.isPending ? "Sending..." : "Book a Demo"}
+              </Button>
 
               {!showRating ? (
                 <Button
