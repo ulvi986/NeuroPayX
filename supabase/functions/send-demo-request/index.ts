@@ -26,7 +26,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending demo request email:", { recipientEmail, itemName, itemType, userEmail });
 
     const emailResponse = await resend.emails.send({
-      from: "no_replyNeuroPayX@gmail.com",
+      from: "NeuroPayX <onboarding@resend.dev>",
       to: [recipientEmail],
       subject: `New Demo Request for ${itemName}`,
       html: `
