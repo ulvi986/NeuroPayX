@@ -37,7 +37,7 @@ export const TemplateCard = ({ id, title, price, imageUrl, rating }: TemplateCar
         </CardContent>
         <CardFooter className="p-4 pt-0">
           <Badge variant="secondary" className="text-base font-semibold">
-            ${price.toFixed(2)}
+            {price.toFixed(2)}AZN
           </Badge>
         </CardFooter>
       </Card>
