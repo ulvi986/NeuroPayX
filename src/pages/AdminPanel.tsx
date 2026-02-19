@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Layout } from "@/components/Layout";
@@ -10,8 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
 import { adminApi } from "@/lib/api/admin";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Trash2, Plus, ShieldAlert } from "lucide-react";
+import { Trash2, Plus, ShieldAlert, Upload } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -80,33 +81,57 @@ function ConsultantsTab({ userId }: { userId: string }) {
     last_name: "",
     bio: "",
     experience: "",
-    photo_url: "",
+    email: "",
     price_per_hour: "0",
   });
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: consultants, isLoading } = useQuery({
     queryKey: ["admin-consultants"],
     queryFn: adminApi.getAllConsultants,
   });
 
+  const uploadPhoto = async (file: File): Promise<string> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const { error } = await supabase.storage.from('consultant-photos').upload(fileName, file);
+    if (error) throw error;
+    const { data } = supabase.storage.from('consultant-photos').getPublicUrl(fileName);
+    return data.publicUrl;
+  };
+
   const createMutation = useMutation({
-    mutationFn: () =>
-      adminApi.createConsultant({
+    mutationFn: async () => {
+      setUploading(true);
+      let photo_url: string | undefined;
+      if (photoFile) {
+        photo_url = await uploadPhoto(photoFile);
+      }
+      return adminApi.createConsultant({
         user_id: userId,
         first_name: form.first_name,
         last_name: form.last_name,
         bio: form.bio || undefined,
         experience: form.experience || undefined,
-        photo_url: form.photo_url || undefined,
+        email: form.email || undefined,
+        photo_url,
         price_per_hour: parseFloat(form.price_per_hour) || 0,
-      }),
+      });
+    },
     onSuccess: () => {
       toast.success("Məsləhətçi yaradıldı!");
       queryClient.invalidateQueries({ queryKey: ["admin-consultants"] });
       setDialogOpen(false);
-      setForm({ first_name: "", last_name: "", bio: "", experience: "", photo_url: "", price_per_hour: "0" });
+      setForm({ first_name: "", last_name: "", bio: "", experience: "", email: "", price_per_hour: "0" });
+      setPhotoFile(null);
+      setUploading(false);
     },
-    onError: (err: any) => toast.error(err.message),
+    onError: (err: any) => {
+      toast.error(err.message);
+      setUploading(false);
+    },
   });
 
   const deleteMutation = useMutation({
@@ -152,15 +177,34 @@ function ConsultantsTab({ userId }: { userId: string }) {
                 <Textarea value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })} />
               </div>
               <div className="space-y-2">
-                <Label>Şəkil URL</Label>
-                <Input value={form.photo_url} onChange={(e) => setForm({ ...form, photo_url: e.target.value })} placeholder="https://..." />
+                <Label>Şəkil</Label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={(e) => setPhotoFile(e.target.files?.[0] || null)}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  {photoFile ? photoFile.name : "Şəkil seçin"}
+                </Button>
+              </div>
+              <div className="space-y-2">
+                <Label>Email (Gmail)</Label>
+                <Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="example@gmail.com" type="email" />
               </div>
               <div className="space-y-2">
                 <Label>Qiymət ($/saat)</Label>
                 <Input type="number" value={form.price_per_hour} onChange={(e) => setForm({ ...form, price_per_hour: e.target.value })} />
               </div>
-              <Button onClick={() => createMutation.mutate()} disabled={!form.first_name || !form.last_name || createMutation.isPending} className="w-full">
-                {createMutation.isPending ? "Yaradılır..." : "Yarat"}
+              <Button onClick={() => createMutation.mutate()} disabled={!form.first_name || !form.last_name || createMutation.isPending || uploading} className="w-full">
+                {createMutation.isPending || uploading ? "Yaradılır..." : "Yarat"}
               </Button>
             </div>
           </DialogContent>
