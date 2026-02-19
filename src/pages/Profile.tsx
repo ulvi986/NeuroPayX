@@ -30,7 +30,7 @@ export default function Profile() {
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', user.id)
+      .eq('user_id', user.id)
       .maybeSingle();
 
     if (!error && data) {
@@ -75,9 +75,15 @@ export default function Profile() {
                 />
               )}
               <div>
-                <p className="font-semibold text-lg">{profile?.email}</p>
-                <p className="text-sm text-muted-foreground">
-                  Member since {profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Unknown'}
+                <p className="font-semibold text-lg">
+                  {[profile?.first_name, profile?.last_name].filter(Boolean).join(' ') || 'Ad qeyd edilməyib'}
+                </p>
+                <p className="text-sm text-muted-foreground">{profile?.email || user?.email}</p>
+                {profile?.bio && (
+                  <p className="text-sm text-muted-foreground mt-1">{profile.bio}</p>
+                )}
+                <p className="text-xs text-muted-foreground mt-1">
+                  Üzv olub: {profile?.created_at ? new Date(profile.created_at).toLocaleDateString('az-AZ') : '—'}
                 </p>
               </div>
             </div>
