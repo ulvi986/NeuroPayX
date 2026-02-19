@@ -79,12 +79,33 @@ export const consultantsApi = {
   async getConversationMessages(conversationId: string): Promise<Message[]> {
     const { data, error } = await supabase
       .from("messages" as any)
-      .select("*, profiles:sender_id(first_name, last_name, avatar_url)")
+      .select("*")
       .eq("conversation_id", conversationId)
       .order("created_at", { ascending: true });
 
     if (error) throw error;
-    return data as any as Message[];
+    
+    const messages = data as any as Message[];
+    
+    // Fetch sender profiles separately
+    const senderIds = [...new Set(messages.map(m => m.sender_id))];
+    if (senderIds.length > 0) {
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, first_name, last_name, avatar_url")
+        .in("user_id", senderIds);
+      
+      const profileMap = new Map(
+        (profiles || []).map((p: any) => [p.user_id, p])
+      );
+      
+      return messages.map(m => ({
+        ...m,
+        profiles: profileMap.get(m.sender_id) || null,
+      }));
+    }
+    
+    return messages;
   },
 
   async sendMessage(conversationId: string, senderId: string, content: string) {
