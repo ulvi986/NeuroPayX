@@ -1,85 +1,108 @@
 import { supabase } from "@/integrations/supabase/client";
-import { Tables } from "@/integrations/supabase/types";
 
-export type Consultant = Tables<"consultants">;
-export type ConsultantComment = Tables<"consultant_comments">;
-export type ConsultantRating = Tables<"consultant_ratings">;
-export type ConsultationRequest = Tables<"consultation_requests">;
+export interface Consultant {
+  id: string;
+  user_id: string;
+  first_name: string;
+  last_name: string;
+  bio: string | null;
+  experience: string | null;
+  photo_url: string | null;
+  price_per_hour: number;
+  is_available: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Conversation {
+  id: string;
+  consultant_id: string;
+  user_id: string;
+  created_at: string;
+  updated_at: string;
+  consultants?: Consultant;
+}
+
+export interface Message {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  content: string;
+  created_at: string;
+  profiles?: { first_name: string | null; last_name: string | null; avatar_url: string | null };
+}
 
 export const consultantsApi = {
-  async getAll() {
+  async getAll(): Promise<Consultant[]> {
     const { data, error } = await supabase
-      .from("consultants")
+      .from("consultants" as any)
       .select("*")
+      .eq("is_available", true)
       .order("created_at", { ascending: false });
-    
+
     if (error) throw error;
-    return data;
+    return data as any as Consultant[];
   },
 
-  async getById(id: string) {
+  async getById(id: string): Promise<Consultant> {
     const { data, error } = await supabase
-      .from("consultants")
-      .select(`
-        *,
-        consultant_comments(*, profiles(*)),
-        consultant_ratings(*)
-      `)
+      .from("consultants" as any)
+      .select("*")
       .eq("id", id)
       .single();
-    
+
     if (error) throw error;
-    return data;
+    return data as any as Consultant;
   },
 
-  async getAverageRating(consultantId: string) {
-    const { data, error } = await supabase
-      .rpc("get_consultant_avg_rating", { consultant_id: consultantId });
-    
-    if (error) throw error;
-    return data;
-  },
-
-  async requestConsultation(consultantId: string, userId: string, message: string) {
-    const { data, error } = await supabase
-      .from("consultation_requests")
-      .insert({ consultant_id: consultantId, user_id: userId, message })
-      .select()
+  async getOrCreateConversation(consultantId: string, userId: string): Promise<string> {
+    // Check existing
+    const { data: existing } = await supabase
+      .from("conversations" as any)
+      .select("id")
+      .eq("consultant_id", consultantId)
+      .eq("user_id", userId)
       .single();
-    
-    if (error) throw error;
-    return data;
-  },
 
-  async addRating(consultantId: string, userId: string, rating: number) {
+    if (existing) return (existing as any).id;
+
     const { data, error } = await supabase
-      .from("consultant_ratings")
-      .upsert({ consultant_id: consultantId, user_id: userId, rating })
-      .select()
+      .from("conversations" as any)
+      .insert({ consultant_id: consultantId, user_id: userId } as any)
+      .select("id")
       .single();
-    
+
     if (error) throw error;
-    return data;
+    return (data as any).id;
   },
 
-  async addComment(consultantId: string, userId: string, comment: string) {
+  async getConversationMessages(conversationId: string): Promise<Message[]> {
     const { data, error } = await supabase
-      .from("consultant_comments")
-      .insert({ consultant_id: consultantId, user_id: userId, comment })
-      .select()
-      .single();
-    
+      .from("messages" as any)
+      .select("*, profiles:sender_id(first_name, last_name, avatar_url)")
+      .eq("conversation_id", conversationId)
+      .order("created_at", { ascending: true });
+
     if (error) throw error;
-    return data;
+    return data as any as Message[];
   },
 
-  async getUserRequests(userId: string) {
+  async sendMessage(conversationId: string, senderId: string, content: string) {
+    const { error } = await supabase
+      .from("messages" as any)
+      .insert({ conversation_id: conversationId, sender_id: senderId, content } as any);
+
+    if (error) throw error;
+  },
+
+  async getUserConversations(userId: string): Promise<Conversation[]> {
     const { data, error } = await supabase
-      .from("consultation_requests")
+      .from("conversations" as any)
       .select("*, consultants(*)")
-      .eq("user_id", userId);
-    
+      .eq("user_id", userId)
+      .order("updated_at", { ascending: false });
+
     if (error) throw error;
-    return data;
-  }
+    return data as any as Conversation[];
+  },
 };
