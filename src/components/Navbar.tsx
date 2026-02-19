@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Plus, LogOut, User, Menu } from "lucide-react";
+import { LogOut, User, Menu } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { useState } from "react";
@@ -31,21 +31,8 @@ export const Navbar = () => {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            <Link to="/templates" className="text-sm font-medium hover:text-primary transition-colors">
-              Templates
-            </Link>
             <Link to="/consultants" className="text-sm font-medium hover:text-primary transition-colors">
               Consultants
-            </Link>
-            <Link to="/community" className="text-sm font-medium hover:text-primary transition-colors">
-              Community
-            </Link>
-            
-            <Link to="/create-template">
-              <Button size="sm">
-                <Plus className="h-4 w-4 mr-2" />
-                Create Template
-              </Button>
             </Link>
 
             {user ? (
@@ -78,31 +65,9 @@ export const Navbar = () => {
                 <Button 
                   variant="ghost" 
                   className="justify-start text-lg"
-                  onClick={() => handleNavigation('/templates')}
-                >
-                  Templates
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  className="justify-start text-lg"
                   onClick={() => handleNavigation('/consultants')}
                 >
                   Consultants
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  className="justify-start text-lg"
-                  onClick={() => handleNavigation('/community')}
-                >
-                  Community
-                </Button>
-                <Button 
-                  variant="default" 
-                  className="justify-start text-lg"
-                  onClick={() => handleNavigation('/create-template')}
-                >
-                  <Plus className="h-5 w-5 mr-2" />
-                  Create Template
                 </Button>
 
                 <div className="border-t pt-4 mt-4 space-y-4">
