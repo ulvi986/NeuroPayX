@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
 import { adminApi } from "@/lib/api/admin";
@@ -65,23 +64,7 @@ export default function AdminPanel() {
       <div className="max-w-5xl mx-auto space-y-6">
         <h1 className="text-4xl font-bold">Admin Panel</h1>
 
-        <Tabs defaultValue="consultants">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="consultants">Məsləhətçilər</TabsTrigger>
-            <TabsTrigger value="templates">Şablonlar</TabsTrigger>
-            <TabsTrigger value="communities">İcmalar</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="consultants">
-            <ConsultantsTab userId={user!.id} />
-          </TabsContent>
-          <TabsContent value="templates">
-            <TemplatesTab />
-          </TabsContent>
-          <TabsContent value="communities">
-            <CommunitiesTab />
-          </TabsContent>
-        </Tabs>
+        <ConsultantsTab userId={user!.id} />
       </div>
     </Layout>
   );
@@ -208,138 +191,3 @@ function ConsultantsTab({ userId }: { userId: string }) {
   );
 }
 
-// ─── Templates Tab ──────────────────────────────────────────
-
-function TemplatesTab() {
-  const queryClient = useQueryClient();
-
-  const { data: templates, isLoading } = useQuery({
-    queryKey: ["admin-templates"],
-    queryFn: adminApi.getAllTemplates,
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: adminApi.deleteTemplate,
-    onSuccess: () => {
-      toast.success("Şablon silindi!");
-      queryClient.invalidateQueries({ queryKey: ["admin-templates"] });
-    },
-    onError: (err: any) => toast.error(err.message),
-  });
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Şablonlar</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <div className="space-y-2">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}</div>
-        ) : templates && templates.length > 0 ? (
-          <div className="space-y-3">
-            {templates.map((t: any) => (
-              <div key={t.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div>
-                  <p className="font-semibold">{t.title || t.name || "Adsız şablon"}</p>
-                  <p className="text-sm text-muted-foreground">${Number(t.price || 0).toFixed(2)}</p>
-                </div>
-                <Button variant="destructive" size="icon" onClick={() => deleteMutation.mutate(t.id)} disabled={deleteMutation.isPending}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-muted-foreground py-8">Şablon yoxdur.</p>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
-
-// ─── Communities Tab ─────────────────────────────────────────
-
-function CommunitiesTab() {
-  const queryClient = useQueryClient();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [form, setForm] = useState({ name: "", description: "" });
-
-  const { data: communities, isLoading } = useQuery({
-    queryKey: ["admin-communities"],
-    queryFn: adminApi.getAllCommunities,
-  });
-
-  const createMutation = useMutation({
-    mutationFn: () => adminApi.createCommunity({ name: form.name, description: form.description || undefined }),
-    onSuccess: () => {
-      toast.success("İcma yaradıldı!");
-      queryClient.invalidateQueries({ queryKey: ["admin-communities"] });
-      setDialogOpen(false);
-      setForm({ name: "", description: "" });
-    },
-    onError: (err: any) => toast.error(err.message),
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: adminApi.deleteCommunity,
-    onSuccess: () => {
-      toast.success("İcma silindi!");
-      queryClient.invalidateQueries({ queryKey: ["admin-communities"] });
-    },
-    onError: (err: any) => toast.error(err.message),
-  });
-
-  return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>İcmalar</CardTitle>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button size="sm">
-              <Plus className="h-4 w-4 mr-2" /> Yeni
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Yeni İcma</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label>Ad *</Label>
-                <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-              </div>
-              <div className="space-y-2">
-                <Label>Təsvir</Label>
-                <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-              </div>
-              <Button onClick={() => createMutation.mutate()} disabled={!form.name || createMutation.isPending} className="w-full">
-                {createMutation.isPending ? "Yaradılır..." : "Yarat"}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <div className="space-y-2">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 w-full" />)}</div>
-        ) : communities && communities.length > 0 ? (
-          <div className="space-y-3">
-            {communities.map((c: any) => (
-              <div key={c.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div>
-                  <p className="font-semibold">{c.name}</p>
-                  <p className="text-sm text-muted-foreground">{c.description || "Təsvir yoxdur"}</p>
-                </div>
-                <Button variant="destructive" size="icon" onClick={() => deleteMutation.mutate(c.id)} disabled={deleteMutation.isPending}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-muted-foreground py-8">İcma yoxdur.</p>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
