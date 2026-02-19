@@ -27,7 +27,7 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, firstName?: string, lastName?: string) => {
     const redirectUrl = `${window.location.origin}/`;
     
     // Fetch user's IP address
@@ -46,10 +46,20 @@ export const useAuth = () => {
       options: {
         emailRedirectTo: redirectUrl,
         data: {
-          ip_address: ipAddress
+          ip_address: ipAddress,
+          first_name: firstName,
+          last_name: lastName,
         }
       }
     });
+
+    // Update profile with first/last name after signup
+    if (!error && data.user && (firstName || lastName)) {
+      await supabase
+        .from('profiles')
+        .update({ first_name: firstName, last_name: lastName })
+        .eq('user_id', data.user.id);
+    }
     
     return { data, error };
   };

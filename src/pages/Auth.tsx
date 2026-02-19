@@ -15,6 +15,8 @@ export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
 
   const [signupForm, setSignupForm] = useState({
+    first_name: '',
+    last_name: '',
     email: '',
     password: ''
   });
@@ -28,7 +30,7 @@ export default function Auth() {
     e.preventDefault();
     setIsLoading(true);
 
-    const { data, error } = await signUp(signupForm.email, signupForm.password);
+    const { data, error } = await signUp(signupForm.email, signupForm.password, signupForm.first_name, signupForm.last_name);
 
     if (error) {
       toast.error(error.message);
@@ -110,6 +112,28 @@ export default function Auth() {
 
               <TabsContent value="signup">
                 <form onSubmit={handleSignup} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-first-name">Ad</Label>
+                      <Input
+                        id="signup-first-name"
+                        placeholder="Ad"
+                        value={signupForm.first_name}
+                        onChange={(e) => setSignupForm({ ...signupForm, first_name: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-last-name">Soyad</Label>
+                      <Input
+                        id="signup-last-name"
+                        placeholder="Soyad"
+                        value={signupForm.last_name}
+                        onChange={(e) => setSignupForm({ ...signupForm, last_name: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>
                     <Input
@@ -122,18 +146,18 @@ export default function Auth() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
+                    <Label htmlFor="signup-password">Şifrə</Label>
                     <Input
                       id="signup-password"
                       type="password"
-                      placeholder="Create a password"
+                      placeholder="Şifrə yaradın"
                       value={signupForm.password}
                       onChange={(e) => setSignupForm({ ...signupForm, password: e.target.value })}
                       required
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Creating account...' : 'Sign Up'}
+                    {isLoading ? 'Hesab yaradılır...' : 'Qeydiyyat'}
                   </Button>
                 </form>
               </TabsContent>
