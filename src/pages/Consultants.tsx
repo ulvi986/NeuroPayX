@@ -14,36 +14,36 @@ export default function Consultants() {
     <Layout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-4xl font-bold mb-2">Find a Consultant</h1>
+          <h1 className="text-4xl font-bold mb-2">Məsləhətçilər</h1>
           <p className="text-muted-foreground">
-            Connect with expert consultants for personalized guidance
+            Peşəkar məsləhətçilərlə əlaqə saxlayın
           </p>
         </div>
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="space-y-3">
-                <Skeleton className="h-32 w-full" />
-              </div>
+              <Skeleton key={i} className="h-40 w-full rounded-lg" />
             ))}
           </div>
         ) : consultants && consultants.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {consultants.map((consultant) => (
+            {consultants.map((c) => (
               <ConsultantCard
-                key={consultant.id}
-                id={consultant.id}
-                name={consultant.name}
-                description={consultant.description || undefined}
-                pricePerHour={Number(consultant.price_per_hour)}
-                photoUrl={consultant.photo_url || undefined}
+                key={c.id}
+                id={c.id}
+                firstName={c.first_name}
+                lastName={c.last_name}
+                bio={c.bio || undefined}
+                experience={c.experience || undefined}
+                pricePerHour={Number(c.price_per_hour)}
+                photoUrl={c.photo_url || undefined}
               />
             ))}
           </div>
         ) : (
           <p className="text-center text-muted-foreground py-12">
-            No consultants available yet.
+            Hələlik məsləhətçi yoxdur.
           </p>
         )}
       </div>

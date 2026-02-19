@@ -80,7 +80,7 @@ export default function CreateTemplate() {
         data: existingProfile,
         error: profileError,
       } = await supabase
-        .from("profiles")
+        .from("profiles" as any)
         .select("id")
         .eq("id", user.id)
         .maybeSingle();
@@ -94,25 +94,25 @@ export default function CreateTemplate() {
         )}&background=0D8ABC&color=fff&size=200`;
 
         const { error: insertProfileError } = await supabase
-          .from("profiles")
+          .from("profiles" as any)
           .insert({
             id: user.id,
             email: user.email,
             avatar_url: avatarUrl,
-          });
+          } as any);
 
         if (insertProfileError) throw insertProfileError;
       }
 
       // Create template
       const { data: template, error: templateError } = await supabase
-        .from("templates")
+        .from("templates" as any)
         .insert({
           title: templateName,
           description,
           price: parseFloat(price),
           creator_id: user.id,
-        })
+        } as any)
         .select()
         .single();
 
@@ -123,7 +123,7 @@ export default function CreateTemplate() {
         for (let i = 0; i < images.length; i++) {
           const file = images[i];
           const fileExt = file.name.split(".").pop();
-          const filePath = `${template.id}/${Date.now()}-${i}.${fileExt}`;
+          const filePath = `${(template as any).id}/${Date.now()}-${i}.${fileExt}`;
 
           const { error: uploadError } = await supabase.storage
             .from("templates")
@@ -137,20 +137,20 @@ export default function CreateTemplate() {
 
           // Save image reference
           const { error: imageError } = await supabase
-            .from("template_images")
+            .from("template_images" as any)
             .insert({
-              template_id: template.id,
+              template_id: (template as any).id,
               image_url: urlData.publicUrl,
               display_order: i,
-            });
+            } as any);
 
           if (imageError) throw imageError;
         }
       }
 
-      return template;
+      return template as any;
     },
-    onSuccess: (template) => {
+    onSuccess: (template: any) => {
       toast({
         title: "Success",
         description: "Template created successfully!",

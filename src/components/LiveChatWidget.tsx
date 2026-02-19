@@ -26,7 +26,6 @@ export const LiveChatWidget = () => {
   const [hasStartedChat, setHasStartedChat] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Generate or retrieve visitor ID
   useEffect(() => {
     let id = localStorage.getItem("chat_visitor_id");
     if (!id) {
@@ -36,28 +35,26 @@ export const LiveChatWidget = () => {
     setVisitorId(id);
   }, []);
 
-  // Scroll to bottom when messages change
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // Subscribe to new messages
   useEffect(() => {
     if (!sessionId) return;
 
     const channel = supabase
       .channel(`chat-${sessionId}`)
       .on(
-        "postgres_changes",
+        "postgres_changes" as any,
         {
           event: "INSERT",
           schema: "public",
           table: "chat_messages",
           filter: `session_id=eq.${sessionId}`,
         },
-        (payload) => {
+        (payload: any) => {
           const newMsg = payload.new as ChatMessage;
           setMessages((prev) => {
             if (prev.some((m) => m.id === newMsg.id)) return prev;
@@ -76,12 +73,12 @@ export const LiveChatWidget = () => {
     if (!visitorName.trim()) return;
 
     const { data, error } = await supabase
-      .from("chat_sessions")
+      .from("chat_sessions" as any)
       .insert({
         visitor_id: visitorId,
         visitor_name: visitorName.trim(),
         visitor_email: visitorEmail.trim() || null,
-      })
+      } as any)
       .select()
       .single();
 
@@ -90,25 +87,24 @@ export const LiveChatWidget = () => {
       return;
     }
 
-    setSessionId(data.id);
+    const sessionData = data as any;
+    setSessionId(sessionData.id);
     setHasStartedChat(true);
 
-    // Send welcome message from system
-    await supabase.from("chat_messages").insert({
-      session_id: data.id,
+    await supabase.from("chat_messages" as any).insert({
+      session_id: sessionData.id,
       sender_type: "agent",
       sender_id: "system",
       message: `Hello ${visitorName}! Welcome to our support chat. An agent will be with you shortly.`,
-    });
+    } as any);
 
-    // Fetch initial messages
     const { data: msgs } = await supabase
-      .from("chat_messages")
+      .from("chat_messages" as any)
       .select("*")
-      .eq("session_id", data.id)
+      .eq("session_id", sessionData.id)
       .order("created_at", { ascending: true });
 
-    if (msgs) setMessages(msgs as ChatMessage[]);
+    if (msgs) setMessages(msgs as any as ChatMessage[]);
   };
 
   const sendMessage = async () => {
@@ -118,12 +114,12 @@ export const LiveChatWidget = () => {
     const messageText = newMessage.trim();
     setNewMessage("");
 
-    const { error } = await supabase.from("chat_messages").insert({
+    const { error } = await supabase.from("chat_messages" as any).insert({
       session_id: sessionId,
       sender_type: "visitor",
       sender_id: visitorId,
       message: messageText,
-    });
+    } as any);
 
     if (error) {
       console.error("Error sending message:", error);
@@ -162,7 +158,6 @@ export const LiveChatWidget = () => {
         isMinimized ? "h-14" : "h-[500px]"
       }`}
     >
-      {/* Header */}
       <div className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground rounded-t-lg">
         <div className="flex items-center gap-2">
           <MessageCircle className="h-5 w-5" />
@@ -191,16 +186,13 @@ export const LiveChatWidget = () => {
       {!isMinimized && (
         <>
           {!hasStartedChat ? (
-            /* Start chat form */
             <div className="flex-1 p-4 flex flex-col justify-center">
               <h3 className="text-lg font-semibold mb-4 text-center">
                 Start a conversation
               </h3>
               <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium mb-1 block">
-                    Name *
-                  </label>
+                  <label className="text-sm font-medium mb-1 block">Name *</label>
                   <Input
                     value={visitorName}
                     onChange={(e) => setVisitorName(e.target.value)}
@@ -209,9 +201,7 @@ export const LiveChatWidget = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-1 block">
-                    Email (optional)
-                  </label>
+                  <label className="text-sm font-medium mb-1 block">Email (optional)</label>
                   <Input
                     type="email"
                     value={visitorEmail}
@@ -231,16 +221,13 @@ export const LiveChatWidget = () => {
             </div>
           ) : (
             <>
-              {/* Messages */}
               <ScrollArea className="flex-1 p-4" ref={scrollRef}>
                 <div className="space-y-3">
                   {messages.map((msg) => (
                     <div
                       key={msg.id}
                       className={`flex ${
-                        msg.sender_type === "visitor"
-                          ? "justify-end"
-                          : "justify-start"
+                        msg.sender_type === "visitor" ? "justify-end" : "justify-start"
                       }`}
                     >
                       <div
@@ -265,8 +252,6 @@ export const LiveChatWidget = () => {
                   ))}
                 </div>
               </ScrollArea>
-
-              {/* Input */}
               <div className="p-4 border-t">
                 <div className="flex gap-2">
                   <Input
