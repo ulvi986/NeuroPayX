@@ -1,14 +1,24 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { LogOut, User, Menu } from "lucide-react";
+import { LogOut, User, Menu, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { adminApi } from "@/lib/api/admin";
 
 export const Navbar = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      adminApi.checkIsAdmin(user.id).then(setIsAdmin);
+    } else {
+      setIsAdmin(false);
+    }
+  }, [user]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -37,6 +47,12 @@ export const Navbar = () => {
 
             {user ? (
               <div className="flex items-center gap-2">
+                {isAdmin && (
+                  <Button size="sm" variant="ghost" onClick={() => navigate('/admin')}>
+                    <ShieldCheck className="h-4 w-4 mr-2" />
+                    Admin
+                  </Button>
+                )}
                 <Button size="sm" variant="ghost" onClick={() => navigate('/profile')}>
                   <User className="h-4 w-4 mr-2" />
                   Profile
@@ -72,7 +88,17 @@ export const Navbar = () => {
 
                 <div className="border-t pt-4 mt-4 space-y-4">
                   {user ? (
-                    <>
+                     <>
+                      {isAdmin && (
+                        <Button 
+                          variant="outline" 
+                          className="w-full justify-start text-lg"
+                          onClick={() => handleNavigation('/admin')}
+                        >
+                          <ShieldCheck className="h-5 w-5 mr-2" />
+                          Admin Panel
+                        </Button>
+                      )}
                       <Button 
                         variant="outline" 
                         className="w-full justify-start text-lg"
