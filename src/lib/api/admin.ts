@@ -20,6 +20,7 @@ export const adminApi = {
     last_name: string;
     bio?: string;
     experience?: string;
+    email?: string;
     photo_url?: string;
     price_per_hour?: number;
   }) {
