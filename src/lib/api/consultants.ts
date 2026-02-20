@@ -10,6 +10,7 @@ export interface Consultant {
   photo_url: string | null;
   price_per_hour: number;
   is_available: boolean;
+  email: string | null;
   created_at: string;
   updated_at: string;
 }
