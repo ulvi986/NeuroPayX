@@ -11,7 +11,7 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 import AdminPanel from "./pages/AdminPanel";
-import { LiveChatWidget } from "./components/LiveChatWidget";
+
 
 const queryClient = new QueryClient();
 
@@ -31,7 +31,7 @@ const App = () => (
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-        <LiveChatWidget />
+        
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
