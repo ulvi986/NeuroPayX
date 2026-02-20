@@ -9,7 +9,7 @@ import ConsultantDetail from "./pages/ConsultantDetail";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
-import Conversation from "./pages/Conversation";
+
 import AdminPanel from "./pages/AdminPanel";
 import { LiveChatWidget } from "./components/LiveChatWidget";
 
@@ -27,7 +27,7 @@ const App = () => (
           <Route path="/consultants/:id" element={<ConsultantDetail />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/conversations/:id" element={<Conversation />} />
+          
           <Route path="/admin" element={<AdminPanel />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

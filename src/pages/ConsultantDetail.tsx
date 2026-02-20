@@ -5,16 +5,25 @@ import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { consultantsApi } from "@/lib/api/consultants";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MessageSquare, Briefcase } from "lucide-react";
+import { Mail, Briefcase, Send } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function ConsultantDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [senderName, setSenderName] = useState("");
+  const [senderEmail, setSenderEmail] = useState("");
+  const [sending, setSending] = useState(false);
 
   const { data: consultant, isLoading } = useQuery({
     queryKey: ["consultant", id],
@@ -22,17 +31,50 @@ export default function ConsultantDetail() {
     enabled: !!id,
   });
 
-  const handleMessage = async () => {
-    if (!user) {
-      toast.error("Mesaj göndərmək üçün daxil olmalısınız.");
-      navigate("/auth");
+  const handleSendEmail = async () => {
+    if (!message.trim() || !senderName.trim() || !senderEmail.trim()) {
+      toast.error("Bütün sahələri doldurun.");
       return;
     }
+
+    if (!consultant?.email) {
+      toast.error("Məsləhətçinin email ünvanı tapılmadı.");
+      return;
+    }
+
+    setSending(true);
     try {
-      const conversationId = await consultantsApi.getOrCreateConversation(id!, user.id);
-      navigate(`/conversations/${conversationId}`);
+      const { data, error } = await supabase.functions.invoke("send-consultant-email", {
+        body: {
+          consultantEmail: consultant.email,
+          consultantName: `${consultant.first_name} ${consultant.last_name}`,
+          senderName: senderName.trim(),
+          senderEmail: senderEmail.trim(),
+          message: message.trim(),
+        },
+      });
+
+      if (error) throw error;
+
+      toast.success("Mesajınız uğurla göndərildi!");
+      setMessage("");
+      setOpen(false);
     } catch (err: any) {
-      toast.error(err.message || "Xəta baş verdi");
+      toast.error(err.message || "Mesaj göndərilə bilmədi.");
+    }
+    setSending(false);
+  };
+
+  // Pre-fill user info when dialog opens
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (isOpen && user) {
+      setSenderEmail(user.email || "");
+      setSenderName(
+        [user.user_metadata?.first_name, user.user_metadata?.last_name]
+          .filter(Boolean)
+          .join(" ") || ""
+      );
     }
   };
 
@@ -92,10 +134,55 @@ export default function ConsultantDetail() {
               <p className="text-lg text-muted-foreground">{consultant.bio}</p>
             )}
 
-            <Button size="lg" onClick={handleMessage} disabled={loading}>
-              <MessageSquare className="h-5 w-5 mr-2" />
-              Mesaj göndər
-            </Button>
+            <Dialog open={open} onOpenChange={handleOpenChange}>
+              <DialogTrigger asChild>
+                <Button size="lg">
+                  <Mail className="h-5 w-5 mr-2" />
+                  Mesaj göndər
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>{fullName} — mesaj göndər</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-2">
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Adınız *</label>
+                    <Input
+                      value={senderName}
+                      onChange={(e) => setSenderName(e.target.value)}
+                      placeholder="Ad Soyad"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Email *</label>
+                    <Input
+                      type="email"
+                      value={senderEmail}
+                      onChange={(e) => setSenderEmail(e.target.value)}
+                      placeholder="sizin@email.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium mb-1 block">Mesaj *</label>
+                    <Textarea
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      placeholder="Mesajınızı yazın..."
+                      rows={5}
+                    />
+                  </div>
+                  <Button
+                    className="w-full"
+                    onClick={handleSendEmail}
+                    disabled={sending || !message.trim() || !senderName.trim() || !senderEmail.trim()}
+                  >
+                    <Send className="h-4 w-4 mr-2" />
+                    {sending ? "Göndərilir..." : "Göndər"}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>

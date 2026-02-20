@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { MessageSquare, User } from 'lucide-react';
+import { User } from 'lucide-react';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -14,7 +14,6 @@ export default function Profile() {
   const [profile, setProfile] = useState<any>(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const [consultant, setConsultant] = useState<any>(null);
-  const [conversations, setConversations] = useState<any[]>([]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -52,35 +51,6 @@ export default function Profile() {
 
       if (consultantData) {
         setConsultant(consultantData);
-        // Assign consultant role if not already assigned
-        await supabase
-          .from('user_roles' as any)
-          .upsert(
-            { user_id: user.id, role: 'consultant' } as any,
-            { onConflict: 'user_id,role' }
-          );
-
-        // Fetch conversations for this consultant
-        const { data: convos } = await supabase
-          .from('conversations')
-          .select('*, profiles!conversations_user_id_fkey(first_name, last_name, email)')
-          .eq('consultant_id', consultantData.id)
-          .order('updated_at', { ascending: false });
-
-        if (convos) {
-          // Fetch user profiles for each conversation
-          const convoWithProfiles = await Promise.all(
-            (convos as any[]).map(async (conv: any) => {
-              const { data: userProfile } = await supabase
-                .from('profiles')
-                .select('first_name, last_name, email')
-                .eq('user_id', conv.user_id)
-                .maybeSingle();
-              return { ...conv, userProfile };
-            })
-          );
-          setConversations(convoWithProfiles);
-        }
       }
     }
 
@@ -145,47 +115,6 @@ export default function Profile() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Consultant conversations section */}
-        {consultant && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
-                Mesajlarım
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {conversations.length > 0 ? (
-                <div className="space-y-3">
-                  {conversations.map((conv) => (
-                    <Link
-                      key={conv.id}
-                      to={`/conversations/${conv.id}`}
-                      className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors"
-                    >
-                      <div>
-                        <p className="font-medium">
-                          {conv.userProfile
-                            ? `${conv.userProfile.first_name || ''} ${conv.userProfile.last_name || ''}`.trim() || conv.userProfile.email
-                            : 'İstifadəçi'}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(conv.updated_at).toLocaleDateString('az-AZ')}
-                        </p>
-                      </div>
-                      <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-muted-foreground py-6">
-                  Hələ mesaj yoxdur.
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        )}
       </div>
     </Layout>
   );
