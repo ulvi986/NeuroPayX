@@ -16,7 +16,7 @@ const Index = () => {
               AI Məsləhətçiləri ilə Tanış Olun
             </div>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight flex items-center justify-center gap-4">
-              <img src={logoImg} alt="NeuropayX logo" className="h-16 md:h-20 w-16 md:w-20 object-contain" />
+              <img src={logoImg} alt="NeuropayX logo" className="h-28 md:h-36 w-28 md:w-36 object-contain" />
               <span className="bg-gradient-to-r from-primary via-chart-1 to-chart-2 bg-clip-text text-transparent">
                 NeuropayX
               </span>
