@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { MessageSquare, Zap, Shield, ArrowRight } from "lucide-react";
-import logoImg from "@/assets/logo.png";
+
 
 const Index = () => {
   return (
@@ -15,8 +15,7 @@ const Index = () => {
             <div className="inline-block mb-6 px-4 py-1.5 rounded-full border border-primary/30 text-sm text-primary font-medium">
               AI Məsləhətçiləri ilə Tanış Olun
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight flex items-center justify-center gap-4">
-              <img src={logoImg} alt="NeuropayX logo" className="h-20 md:h-24 w-20 md:w-24 object-contain" />
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
               <span className="bg-gradient-to-r from-primary via-chart-1 to-chart-2 bg-clip-text text-transparent">
                 NeuropayX
               </span>
