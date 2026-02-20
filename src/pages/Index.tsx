@@ -16,7 +16,7 @@ const partners = [
     name: "Boost Academy",
     logo: partnerBoost,
     bio: "İmtahanlara hazırlıq və təhsil sahəsində rəqəmsal həllər təqdim edən platforma.",
-    website: "https://boost-az-exam.lovable.app/",
+    website: "https://boostexam.lovable.app/",
   },
 ];
 
@@ -37,8 +37,8 @@ const Index = () => {
               </span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
-              Peşəkar AI məsləhətçiləri ilə əlaqə qurun, layihələrinizi sürətləndirin
-              və texnologiya sahəsində irəliləyin.
+              Peşəkar AI məsləhətçiləri ilə əlaqə qurun, layihələrinizi sürətləndirin və texnologiya sahəsində
+              irəliləyin.
             </p>
             <div className="flex gap-4 justify-center">
               <Link to="/consultants">
