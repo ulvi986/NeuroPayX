@@ -40,9 +40,8 @@ export default function Auth() {
 
     if (data.user) {
       toast.success('Account created successfully!');
-      // Give a moment for the session to be established
       setTimeout(() => {
-        navigate('/create-template');
+        navigate('/consultants');
       }, 500);
     }
     setIsLoading(false);
@@ -61,7 +60,7 @@ export default function Auth() {
     }
 
     toast.success('Logged in successfully!');
-    navigate('/');
+    navigate('/consultants');
     setIsLoading(false);
   };
 
