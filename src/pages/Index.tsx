@@ -1,8 +1,24 @@
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, Zap, Shield, ArrowRight } from "lucide-react";
+import { MessageSquare, Zap, Shield, ArrowRight, ExternalLink } from "lucide-react";
+import partnerYenifikir from "@/assets/partner-yenifikir.png";
+import partnerBoost from "@/assets/partner-boost.jpeg";
 
+const partners = [
+  {
+    name: "Yeni Fikir",
+    logo: partnerYenifikir,
+    bio: "Startap və inkubasiya proqramları təşkil edən, gənclərin innovativ ideyalarını dəstəkləyən təşkilat.",
+    website: "https://yenifikir.az/",
+  },
+  {
+    name: "Boost Academy",
+    logo: partnerBoost,
+    bio: "İmtahanlara hazırlıq və təhsil sahəsində rəqəmsal həllər təqdim edən platforma.",
+    website: "https://boost-az-exam.lovable.app/",
+  },
+];
 
 const Index = () => {
   return (
@@ -69,6 +85,35 @@ const Index = () => {
             <p className="text-muted-foreground leading-relaxed">
               Məlumatlarınız qorunur, ödənişlər təhlükəsiz şəkildə həyata keçirilir.
             </p>
+          </div>
+        </section>
+
+        {/* Partners */}
+        <section>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Əməkdaşlarımız</h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            {partners.map((partner) => (
+              <div
+                key={partner.name}
+                className="flex flex-col items-center text-center p-8 rounded-2xl border border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/30 transition-all duration-300"
+              >
+                <img
+                  src={partner.logo}
+                  alt={`${partner.name} logo`}
+                  className="h-24 w-24 object-contain rounded-xl mb-5"
+                />
+                <h3 className="text-xl font-semibold mb-2">{partner.name}</h3>
+                <p className="text-muted-foreground leading-relaxed mb-4">{partner.bio}</p>
+                <a
+                  href={partner.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-primary hover:underline font-medium"
+                >
+                  Vebsayta keç <ExternalLink className="h-4 w-4" />
+                </a>
+              </div>
+            ))}
           </div>
         </section>
 
