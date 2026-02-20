@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { useState, useEffect } from "react";
 import { adminApi } from "@/lib/api/admin";
+import logoImg from "@/assets/logo.png";
 
 export const Navbar = () => {
   const navigate = useNavigate();
@@ -35,7 +36,8 @@ export const Navbar = () => {
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link to="/" className="text-2xl font-bold text-primary">
+          <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-primary">
+            <img src={logoImg} alt="NeuropayX logo" className="h-8 w-8 object-contain" />
             NeuropayX
           </Link>
           
